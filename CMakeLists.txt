@@ -43,6 +43,7 @@ endif()
 
 # library type: [static, shared]
 if(AMED_BUILD_SHARED_LIB)
+	message (WARNING  "for now, its not very well supported.")
 	add_library(AMED SHARED)
 else()
 	add_library(AMED STATIC)
