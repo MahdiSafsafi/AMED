@@ -1,3 +1,1 @@
-* linguist-vendored
-*.html linguist-vendored=false
-*.htm linguist-vendored=false
+*.* linguist-language=Java
