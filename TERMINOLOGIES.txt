@@ -1,0 +1,7 @@
+# TERMINOLOGIES:
+contrary to what is usually the case, we define:
+ARM     : aarch32 or aarch64.
+ARM32   : aarch32.
+ARM64   : aarch64.
+X86     : x86 with any mode(16, 32, 64).
+X86_LONG: x86-64.

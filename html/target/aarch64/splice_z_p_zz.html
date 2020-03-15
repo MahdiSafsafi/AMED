@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="insn.css" /><meta name="generator" content="iform.xsl" /><title>SPLICE</title></head><body><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr /><h2 class="instruction-section">SPLICE</h2><p id="desc">Splice two vectors under predicate control.
+          <p></p><p>
+      <p class="aml">Copy the first active to last active elements (inclusive) from the first source vector to the lowest-numbered elements of the result. Then set any remaining elements of the result to a copy of the lowest-numbered elements from the second source vector. The result is placed destructively in the destination and first source vector, or constructively in the destination vector.</p>
+    </p></p>
+    <p class="desc">
+      It has encodings from 2 classes:
+      <a href="#splice_z_p_zz_con">Constructive</a>
+       and 
+      <a href="#splice_z_p_zz_des">Destructive</a>
+    </p>
+    <h3 class="classheading"><a name="splice_z_p_zz_con" id="splice_z_p_zz_con"></a>Constructive</h3><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="r">1</td><td colspan="2" class="lr">size</td><td class="l">1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td class="r">0</td><td colspan="3" class="lr">Pg</td><td colspan="5" class="lr">Zn</td><td colspan="5" class="lr">Zd</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">Constructive</h4><p class="asm-code"><a name="splice_z_p_zz_con" id="splice_z_p_zz_con"></a>SPLICE  <a href="#zd" title="Destination scalable vector register (field &quot;Zd&quot;)">&lt;Zd&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&quot;) [B,D,H,S]">&lt;T&gt;</a>, <a href="#pg" title="Governing scalable predicate register P0-P7 (field &quot;Pg&quot;)">&lt;Pg&gt;</a>, { <a href="#zn1" title="First scalable vector register of a multi-vector sequence (field &quot;Zn&quot;)">&lt;Zn1&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&quot;) [B,D,H,S]">&lt;T&gt;</a>, <a href="#zn2" title="Second scalable vector register of a multi-vector sequence (field &quot;Zn&quot;)">&lt;Zn2&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&quot;) [B,D,H,S]">&lt;T&gt;</a> }</p></div><p class="pseudocode">if !HaveSVE2() then UNDEFINED;
+integer esize = 8 &lt;&lt; <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(size);
+integer g = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Pg);
+integer dst = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zd);
+integer s1 = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zn);
+integer s2 = (s1 + 1) MOD 32;</p>
+    <h3 class="classheading"><a name="splice_z_p_zz_des" id="splice_z_p_zz_des"></a>Destructive</h3><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="r">1</td><td colspan="2" class="lr">size</td><td class="l">1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="r">0</td><td colspan="3" class="lr">Pg</td><td colspan="5" class="lr">Zm</td><td colspan="5" class="lr">Zdn</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">Destructive</h4><p class="asm-code"><a name="splice_z_p_zz_des" id="splice_z_p_zz_des"></a>SPLICE  <a href="#zdn" title="First source and destination scalable vector register (field &quot;Zdn&quot;)">&lt;Zdn&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&quot;) [B,D,H,S]">&lt;T&gt;</a>, <a href="#pg" title="Governing scalable predicate register P0-P7 (field &quot;Pg&quot;)">&lt;Pg&gt;</a>, <a href="#zdn" title="First source and destination scalable vector register (field &quot;Zdn&quot;)">&lt;Zdn&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&quot;) [B,D,H,S]">&lt;T&gt;</a>, <a href="#zm" title="Second source scalable vector register (field &quot;Zm&quot;)">&lt;Zm&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&quot;) [B,D,H,S]">&lt;T&gt;</a></p></div><p class="pseudocode">if !HaveSVE() then UNDEFINED;
+integer esize = 8 &lt;&lt; <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(size);
+integer g = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Pg);
+integer dst = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zdn);
+integer s1 = dst;
+integer s2 = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zm);</p>
+  <p class="encoding-notes"></p><h3 class="explanations">Assembler Symbols</h3><div class="explanations"><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zd&gt;</td><td><a name="zd" id="zd"></a>
+        
+          <p class="aml">Is the name of the destination scalable vector register, encoded in the "Zd" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zdn&gt;</td><td><a name="zdn" id="zdn"></a>
+        
+          <p class="aml">Is the name of the first source and destination scalable vector register, encoded in the "Zdn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;T&gt;</td><td><a name="t" id="t"></a>
+        Is the size specifier, 
+    encoded in 
+    <q>size</q>:
+      
+        <table class="valuetable">
+          
+            <thead>
+              <tr>
+                <th class="bitfield">size</th>
+                <th class="symbol">&lt;T&gt;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="bitfield">00</td>
+                <td class="symbol">B</td>
+              </tr>
+              <tr>
+                <td class="bitfield">01</td>
+                <td class="symbol">H</td>
+              </tr>
+              <tr>
+                <td class="bitfield">10</td>
+                <td class="symbol">S</td>
+              </tr>
+              <tr>
+                <td class="bitfield">11</td>
+                <td class="symbol">D</td>
+              </tr>
+            </tbody>
+          
+        </table>
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Pg&gt;</td><td><a name="pg" id="pg"></a>
+        
+          <p class="aml">Is the name of the governing scalable predicate register P0-P7, encoded in the "Pg" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zn1&gt;</td><td><a name="zn1" id="zn1"></a>
+        
+          <p class="aml">Is the name of the first scalable vector register of a multi-vector sequence, encoded in the "Zn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zn2&gt;</td><td><a name="zn2" id="zn2"></a>
+        
+          <p class="aml">Is the name of the second scalable vector register of a multi-vector sequence, encoded in the "Zn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zm&gt;</td><td><a name="zm" id="zm"></a>
+        
+          <p class="aml">Is the name of the second source scalable vector register, encoded in the "Zm" field.</p>
+        
+      </td></tr></table></div><p class="syntax-notes"></p>
+    <div class="ps" psname="commonps"><a name="commonps" id="commonps"></a><h3 class="pseudocode">Operation</h3>
+      <p class="pseudocode">CheckSVEEnabled();
+integer elements = VL DIV esize;
+bits(PL) mask = P[g];
+bits(VL) operand1 = Z[s1];
+bits(VL) operand2 = Z[s2];
+bits(VL) result;
+integer x = 0;
+boolean active = FALSE;
+integer lastnum = LastActiveElement(mask, esize);
+
+if lastnum &gt;= 0 then
+    for e = 0 to lastnum
+        active = active || ElemP[mask, e, esize] == '1';
+        if active then
+            <a href="shared_pseudocode.html#impl-shared.Elem.write.3" title="accessor: Elem[bits(N) &amp;vector, integer e, integer size] = bits(size) value">Elem</a>[result, x, esize] = <a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand1, e, esize];
+            x = x + 1;
+
+elements = elements - x - 1;
+for e = 0 to elements
+    <a href="shared_pseudocode.html#impl-shared.Elem.write.3" title="accessor: Elem[bits(N) &amp;vector, integer e, integer size] = bits(size) value">Elem</a>[result, x, esize] = <a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand2, e, esize];
+    x = x + 1;
+
+Z[dst] = result;</p>
+    </div>
+  <h3>Operational information</h3><p class="aml">
+          This instruction might be immediately preceded in program order by a <span class="asm-code">MOVPRFX</span> instruction. The <span class="asm-code">MOVPRFX</span> instruction must conform to all of the following requirements, otherwise the behavior of the <span class="asm-code">MOVPRFX</span> and this instruction is <span class="arm-defined-word">unpredictable</span>:
+        </p><ul><li>The <span class="asm-code">MOVPRFX</span> instruction must be unpredicated.</li><li>The <span class="asm-code">MOVPRFX</span> instruction must specify the same destination register as this instruction.</li><li>The destination register must not refer to architectural register state referenced by any other source operand register of this instruction.</li></ul><hr /><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">
+      Internal version only: isa v31.05b, AdvSIMD v29.02, pseudocode v2019-12_rc3_1, sve v2019-12_rc3
+      ; Build timestamp: 2019-12-13T11:35
+    </p><p class="copyconf">
+      Copyright © 2010-2019 Arm Limited or its affiliates. All rights reserved.
+      This document is Non-Confidential.
+    </p></body></html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:x86="http://www.felixcloutier.com/x86"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="style.css"></link><title>RDPMC
+		— Read Performance-Monitoring Counters</title></head><body><header></header><h1>RDPMC
+		— Read Performance-Monitoring Counters</h1>
+
+<table>
+<tr>
+<th>Opcode*</th>
+<th>Instruction</th>
+<th>Op/En</th>
+<th>64-Bit Mode</th>
+<th>Compat/Leg Mode</th>
+<th>Description</th></tr>
+<tr>
+<td>0F 33</td>
+<td>RDPMC</td>
+<td>ZO</td>
+<td>Valid</td>
+<td>Valid</td>
+<td>Read performance-monitoring counter specified by ECX into EDX:EAX.</td></tr></table>
+<h2 id="instruction-operand-encoding">Instruction Operand Encoding<a class="anchor" href="#instruction-operand-encoding">
+			¶
+		</a></h2>
+<table>
+<tr>
+<td>Op/En</td>
+<td>Operand 1</td>
+<td>Operand 2</td>
+<td>Operand 3</td>
+<td>Operand 4</td></tr>
+<tr>
+<td>ZO</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td>
+<td>NA</td></tr></table>
+<h2 id="description">Description<a class="anchor" href="#description">
+			¶
+		</a></h2>
+<p>The EAX register is loaded with the low-order 32 bits. The EDX register is loaded with the supported high-order bits of the counter. The number of high-order bits loaded into EDX is implementation specific on processors that do no support architectural performance monitoring. The width of fixed-function and general-purpose performance counters on processors supporting architectural performance monitoring are reported by CPUID 0AH leaf. See below for the treatment of the EDX register for “fast” reads.</p>
+<p>The ECX register specifies the counter type (if the processor supports architectural performance monitoring) and counter index. Counter type is specified in ECX[30] to select one of two type of performance counters. If the processor does not support architectural performance monitoring, ECX[30:0] specifies the counter index; otherwise ECX[29:0] specifies the index relative to the base of each counter type. ECX[31] selects “fast” read mode if supported. The two counter types are:</p>
+<ul>
+<li>General-purpose or special-purpose performance counters are specified with ECX[30] = 0: The number of general-purpose performance counters on processor supporting architectural performance monitoring are reported by CPUID 0AH leaf. The availability of special-purpose counters, as well as the number of general-purpose counters if the processor does not support architectural performance monitoring, is model specific; see Chapter 18, “Performance Monitoring” of <em>Intel® 64 and IA-32 Architectures Software Developer’s Manual, </em><em>Volume 3B</em>.</li>
+<li>Fixed-function performance counters are specified with ECX[30] = 1. The number fixed-function performance counters is enumerated by CPUID 0AH leaf. See Chapter 18, “Performance Monitoring” of <em>Intel® 64 and IA-32 </em><em>Architectures Software Developer’s Manual, Volume 3B</em>. This counter type is selected if ECX[30] is set.</li></ul>
+<p>The width of fixed-function performance counters and general-purpose performance counters on processors supporting architectural performance monitoring are reported by CPUID 0AH leaf. The width of general-purpose performance counters are 40-bits for processors that do not support architectural performance monitoring counters. The width of special-purpose performance counters are implementation specific.</p>
+<p>When in protected or virtual 8086 mode, the performance-monitoring counters enabled (PCE) flag in register CR4 restricts the use of the RDPMC instruction as follows. When the PCE flag is set, the RDPMC instruction can be executed at any privilege level; when the flag is clear, the instruction can only be executed at privilege level 0. (When in real-address mode, the RDPMC instruction is always enabled.)</p>
+<p>The performance-monitoring counters can also be read with the RDMSR instruction, when executing at privilege level 0.</p>
+<p>The performance-monitoring counters are event counters that can be programmed to count events such as the number of instructions decoded, number of interrupts received, or number of cache loads. Chapter 19, “Performance Monitoring Events,” in the <em>Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 3B</em>, lists the events that can be counted for various processors in the Intel 64 and IA-32 architecture families.</p>
+<p>The RDPMC instruction is not a serializing instruction; that is, it does not imply that all the events caused by the preceding instructions have been completed or that events caused by subsequent instructions have not begun. If an exact event count is desired, software must insert a serializing instruction (such as the CPUID instruction) before and/or after the RDPMC instruction.</p>
+<p>Performing back-to-back fast reads are not guaranteed to be monotonic. To guarantee monotonicity on back-to-back reads, a serializing instruction must be placed between the two RDPMC instructions.</p>
+<p>The RDPMC instruction can execute in 16-bit addressing mode or virtual-8086 mode; however, the full contents of the ECX register are used to select the counter, and the event count is stored in the full EAX and EDX registers. The RDPMC instruction was introduced into the IA-32 Architecture in the Pentium Pro processor and the Pentium processor with MMX technology. The earlier Pentium processors have performance-monitoring counters, but they must be read with the RDMSR instruction.</p>
+<h2 id="operation">Operation<a class="anchor" href="#operation">
+			¶
+		</a></h2>
+<pre>MSCB = Most Significant Counter Bit (* Model-specific *)
+IF (((CR4.PCE = 1) or (CPL = 0) or (CR0.PE = 0)) and (ECX indicates a supported counter))
+    THEN
+        EAX ← counter[31:0];
+        EDX ← ZeroExtend(counter[MSCB:32]);
+    ELSE (* ECX is not valid or CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1 *)
+        #GP(0);
+FI;
+</pre>
+<h2 id="flags-affected">Flags Affected<a class="anchor" href="#flags-affected">
+			¶
+		</a></h2>
+<p>None.</p>
+<h2 class="exceptions" id="protected-mode-exceptions">Protected Mode Exceptions<a class="anchor" href="#protected-mode-exceptions">
+			¶
+		</a></h2>
+<table>
+<tr>
+<td rowspan="2">#GP(0)</td>
+<td>If the current privilege level is not 0 and the PCE flag in the CR4 register is clear.</td></tr>
+<tr>
+<td>If an invalid performance counter index is specified.</td></tr>
+<tr>
+<td>#UD</td>
+<td>If the LOCK prefix is used.</td></tr></table>
+<h2 class="exceptions" id="real-address-mode-exceptions">Real-Address Mode Exceptions<a class="anchor" href="#real-address-mode-exceptions">
+			¶
+		</a></h2>
+<table>
+<tr>
+<td>#GP</td>
+<td>If an invalid performance counter index is specified.</td></tr>
+<tr>
+<td>#UD</td>
+<td>If the LOCK prefix is used.</td></tr></table>
+<h2 class="exceptions" id="virtual-8086-mode-exceptions">Virtual-8086 Mode Exceptions<a class="anchor" href="#virtual-8086-mode-exceptions">
+			¶
+		</a></h2>
+<table>
+<tr>
+<td rowspan="2">#GP(0)</td>
+<td>If the PCE flag in the CR4 register is clear.</td></tr>
+<tr>
+<td>If an invalid performance counter index is specified.</td></tr>
+<tr>
+<td>#UD</td>
+<td>If the LOCK prefix is used.</td></tr></table>
+<h2 class="exceptions" id="compatibility-mode-exceptions">Compatibility Mode Exceptions<a class="anchor" href="#compatibility-mode-exceptions">
+			¶
+		</a></h2>
+<p>Same exceptions as in protected mode.</p>
+<h2 class="exceptions" id="64-bit-mode-exceptions">64-Bit Mode Exceptions<a class="anchor" href="#64-bit-mode-exceptions">
+			¶
+		</a></h2>
+<table>
+<tr>
+<td rowspan="2">#GP(0)</td>
+<td>If the current privilege level is not 0 and the PCE flag in the CR4 register is clear.</td></tr>
+<tr>
+<td>If an invalid performance counter index is specified.</td></tr>
+<tr>
+<td>#UD</td>
+<td>If the LOCK prefix is used.</td></tr></table><footer><p>
+		This UNOFFICIAL, mechanically-separated, non-verified reference is provided for convenience, but it may be
+		inc<span style="opacity: 0.2">omp</span>lete or b<sub>r</sub>oke<sub>n</sub> in various obvious or non-obvious
+		ways. Refer to <a href="https://software.intel.com/sites/default/files/managed/39/c5/325462-sdm-vol-1-2abcd-3abcd.pdf">Intel® 64 and IA-32 Architectures Software Developer’s Manual</a> for anything serious.
+	</p></footer></body></html>

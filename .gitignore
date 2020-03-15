@@ -1,3 +1,17 @@
+# ======================= AMED =======================
+msvc/
+html/amed/
+build/
+
+# eclipse
+*.includepath
+*.project
+
+# eyapp
+*.output
+
+# =====================================================
+
 # Prerequisites
 *.d
 

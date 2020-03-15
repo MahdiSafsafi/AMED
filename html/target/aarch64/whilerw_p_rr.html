@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="insn.css" /><meta name="generator" content="iform.xsl" /><title>WHILERW</title></head><body><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr /><h2 class="instruction-section">WHILERW</h2><p id="desc">While free of read-after-write conflicts.
+          <p></p><p>
+      <p class="aml">This instruction checks two addresses for a conflict or overlap between address ranges of the form [addr,addr+<span class="arm-defined-word">VL</span>÷8), where <span class="arm-defined-word">VL</span> is the accessible vector length in bits, that could result in a loop-carried dependency through memory due to the use of these addresses by contiguous load and store instructions within the same iteration of a loop. Generate a predicate whose elements are true while the addresses cannot conflict within the same iteration, and false thereafter. Sets the <span class="arm-defined-word">First</span> (N), <span class="arm-defined-word">None</span> (Z), <span class="arm-defined-word">!Last</span> (C) condition flags based on the predicate result, and the V flag to zero.</p>
+    </p></p>
+    <p class="desc"></p><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="r">1</td><td colspan="2" class="lr">size</td><td class="lr">1</td><td colspan="5" class="lr">Rm</td><td class="l">0</td><td>0</td><td>1</td><td>1</td><td>0</td><td class="r">0</td><td colspan="5" class="lr">Rn</td><td class="lr">1</td><td colspan="4" class="lr">Pd</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">SVE2</h4><p class="asm-code"><a name="whilerw_p_rr_" id="whilerw_p_rr_"></a>WHILERW <a href="#pd" title="Destination scalable predicate register (field &quot;Pd&quot;)">&lt;Pd&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&quot;) [B,D,H,S]">&lt;T&gt;</a>, <a href="#xn" title="First 64-bit source general-purpose register (field &quot;Rn&quot;)">&lt;Xn&gt;</a>, <a href="#xm" title="Second 64-bit source general-purpose register (field &quot;Rm&quot;)">&lt;Xm&gt;</a></p></div><p class="pseudocode">if !HaveSVE2() then UNDEFINED;
+integer esize = 8 &lt;&lt; <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(size);
+integer n = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Rn);
+integer m = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Rm);
+integer d = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Pd);</p>
+  <p class="encoding-notes"></p><h3 class="explanations">Assembler Symbols</h3><div class="explanations"><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Pd&gt;</td><td><a name="pd" id="pd"></a>
+        
+          <p class="aml">Is the name of the destination scalable predicate register, encoded in the "Pd" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;T&gt;</td><td><a name="t" id="t"></a>
+        Is the size specifier, 
+    encoded in 
+    <q>size</q>:
+      
+        <table class="valuetable">
+          
+            <thead>
+              <tr>
+                <th class="bitfield">size</th>
+                <th class="symbol">&lt;T&gt;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="bitfield">00</td>
+                <td class="symbol">B</td>
+              </tr>
+              <tr>
+                <td class="bitfield">01</td>
+                <td class="symbol">H</td>
+              </tr>
+              <tr>
+                <td class="bitfield">10</td>
+                <td class="symbol">S</td>
+              </tr>
+              <tr>
+                <td class="bitfield">11</td>
+                <td class="symbol">D</td>
+              </tr>
+            </tbody>
+          
+        </table>
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Xn&gt;</td><td><a name="xn" id="xn"></a>
+        
+          <p class="aml">Is the 64-bit name of the first source general-purpose register, encoded in the "Rn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Xm&gt;</td><td><a name="xm" id="xm"></a>
+        
+          <p class="aml">Is the 64-bit name of the second source general-purpose register, encoded in the "Rm" field.</p>
+        
+      </td></tr></table></div><p class="syntax-notes"></p>
+    <div class="ps" psname="commonps"><a name="commonps" id="commonps"></a><h3 class="pseudocode">Operation</h3>
+      <p class="pseudocode">CheckSVEEnabled();
+integer elements = VL DIV esize;
+bits(PL) mask = <a href="shared_pseudocode.html#impl-shared.Ones.1" title="function: bits(N) Ones(integer N)">Ones</a>(PL);
+bits(64) src1 = <a href="shared_pseudocode.html#impl-aarch64.X.read.1" title="accessor: bits(width) X[integer n]">X</a>[n];
+bits(64) src2 = <a href="shared_pseudocode.html#impl-aarch64.X.read.1" title="accessor: bits(width) X[integer n]">X</a>[m];
+integer operand1 = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(src1);
+integer operand2 = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(src2);
+bits(PL) result;
+
+integer diff = <a href="shared_pseudocode.html#impl-shared.Abs.1" title="function: integer Abs(integer x)">Abs</a>(operand2 - operand1) DIV (esize DIV 8);
+for e = 0 to elements-1
+    if diff == 0 || e &lt; diff then
+        ElemP[result, e, esize] = '1';
+    else
+        ElemP[result, e, esize] = '0';
+
+PSTATE.&lt;N,Z,C,V&gt; = PredTest(mask, result, esize);
+P[d] = result;</p>
+    </div>
+  <hr /><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">
+      Internal version only: isa v31.05b, AdvSIMD v29.02, pseudocode v2019-12_rc3_1, sve v2019-12_rc3
+      ; Build timestamp: 2019-12-13T11:35
+    </p><p class="copyconf">
+      Copyright © 2010-2019 Arm Limited or its affiliates. All rights reserved.
+      This document is Non-Confidential.
+    </p></body></html>

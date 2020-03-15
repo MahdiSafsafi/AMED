@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="insn.css" /><meta name="generator" content="iform.xsl" /><title>VSMMLA -- AArch32</title></head><body><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="a32_encindex.html">A32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="t32_encindex.html">T32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr /><h2 class="instruction-section">VSMMLA</h2><p id="desc">
+      <p class="aml">The widening integer matrix multiply-accumulate instruction multiplies the 2x8 matrix of signed 8-bit integer values held in the first source vector by the 8x2 matrix of signed 8-bit integer values in the second source vector. The resulting 2x2 32-bit integer matrix product is destructively added to the 32-bit integer matrix accumulator held in the destination vector. This is equivalent to performing an 8-way dot product per destination element.</p>
+      <p class="aml">From Armv8.2, this is an <span class="arm-defined-word">optional</span> instruction. <a class="armarm-xref" title="Reference to Armv8 ARM section">ID_ISAR6</a>.I8MM indicates whether this instruction is supported in the T32 and A32 instruction sets.</p>
+    </p>
+    <p class="desc">
+      It has encodings from the following instruction sets:
+       A32 (
+      <a href="#a1">A1</a>
+      )
+       and 
+       T32 (
+      <a href="#t1">T1</a>
+      )
+      .
+    </p>
+    <h3 class="classheading"><a name="a1" id="a1"></a>A1<font style="font-size:smaller;"><br />(Armv8.6)
+          </font></h3><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td class="r">0</td><td class="lr">0</td><td class="lr">0</td><td class="lr">D</td><td class="l">1</td><td class="r">0</td><td colspan="4" class="lr">Vn</td><td colspan="4" class="lr">Vd</td><td class="lr">1</td><td class="lr">1</td><td class="lr">0</td><td class="lr">0</td><td class="lr">N</td><td class="lr">1</td><td class="lr">M</td><td class="lr">0</td><td colspan="4" class="lr">Vm</td></tr><tr class="secondrow"><td colspan="7"></td><td></td><td class="droppedname">B</td><td></td><td colspan="2"></td><td colspan="4"></td><td colspan="4"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="droppedname">U</td><td colspan="4"></td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">A1</h4><p class="asm-code"><a name="VSMMLA_A1_Q" id="VSMMLA_A1_Q"></a>VSMMLA{<a href="#q" title="See {xref{ARMARM_Babbefhf}{Standard assembler syntax fields}}">&lt;q&gt;</a>}.S8 <a href="#qd" title="128-bit SIMD&amp;FP third source and destination register (field &quot;D:Vd&quot;)">&lt;Qd&gt;</a>, <a href="#qn" title="First 128-bit SIMD&amp;FP source register (field &quot;N:Vn&quot;)">&lt;Qn&gt;</a>, <a href="#qm" title="Second 128-bit SIMD&amp;FP source register (field &quot;M:Vm&quot;)">&lt;Qm&gt;</a></p></div><p class="pseudocode">if !<a href="shared_pseudocode.html#impl-shared.HaveAArch32Int8MatMulExt.0" title="function: boolean HaveAArch32Int8MatMulExt()">HaveAArch32Int8MatMulExt</a>() then UNDEFINED;
+case B:U of
+    when '00' op1_unsigned = FALSE; op2_unsigned = FALSE;
+    when '01' op1_unsigned = TRUE;  op2_unsigned = TRUE;
+    when '10' op1_unsigned = TRUE;  op2_unsigned = FALSE;
+    when '11' UNDEFINED;
+if Vd&lt;0&gt; == '1' || Vn&lt;0&gt; == '1' || Vm&lt;0&gt; == '1' then UNDEFINED;
+integer d = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(D:Vd);
+integer n = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(N:Vn);
+integer m = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(M:Vm);</p>
+    <h3 class="classheading"><a name="t1" id="t1"></a>T1<font style="font-size:smaller;"><br />(Armv8.6)
+          </font></h3><div class="regdiagram-16x2"><table class="regdiagram"><thead><tr><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td class="r">0</td><td class="lr">0</td><td class="lr">0</td><td class="lr">D</td><td class="l">1</td><td class="r">0</td><td colspan="4" class="lr">Vn</td><td colspan="4" class="lr">Vd</td><td class="lr">1</td><td class="lr">1</td><td class="lr">0</td><td class="lr">0</td><td class="lr">N</td><td class="lr">1</td><td class="lr">M</td><td class="lr">0</td><td colspan="4" class="lr">Vm</td></tr><tr class="secondrow"><td colspan="7"></td><td></td><td class="droppedname">B</td><td></td><td colspan="2"></td><td colspan="4"></td><td colspan="4"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="droppedname">U</td><td colspan="4"></td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">T1</h4><p class="asm-code"><a name="VSMMLA_T1_Q" id="VSMMLA_T1_Q"></a>VSMMLA{<a href="#q" title="See {xref{ARMARM_Babbefhf}{Standard assembler syntax fields}}">&lt;q&gt;</a>}.S8 <a href="#qd" title="128-bit SIMD&amp;FP third source and destination register (field &quot;D:Vd&quot;)">&lt;Qd&gt;</a>, <a href="#qn" title="First 128-bit SIMD&amp;FP source register (field &quot;N:Vn&quot;)">&lt;Qn&gt;</a>, <a href="#qm" title="Second 128-bit SIMD&amp;FP source register (field &quot;M:Vm&quot;)">&lt;Qm&gt;</a></p></div><p class="pseudocode">if <a href="shared_pseudocode.html#impl-aarch32.InITBlock.0" title="function: boolean InITBlock()">InITBlock</a>() then UNPREDICTABLE;
+if !<a href="shared_pseudocode.html#impl-shared.HaveAArch32Int8MatMulExt.0" title="function: boolean HaveAArch32Int8MatMulExt()">HaveAArch32Int8MatMulExt</a>() then UNDEFINED;
+case B:U of
+    when '00' op1_unsigned = FALSE; op2_unsigned = FALSE;
+    when '01' op1_unsigned = TRUE;  op2_unsigned = TRUE;
+    when '10' op1_unsigned = TRUE;  op2_unsigned = FALSE;
+    when '11' UNDEFINED;
+if Vd&lt;0&gt; == '1' || Vn&lt;0&gt; == '1' || Vm&lt;0&gt; == '1' then UNDEFINED;
+integer d = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(D:Vd);
+integer n = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(N:Vn);
+integer m = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(M:Vm);</p>
+  <p class="encoding-notes"></p><h3 class="explanations">Assembler Symbols</h3><div class="explanations"><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;q&gt;</td><td><a name="q" id="q"></a>
+        
+          <p class="aml">See <a class="armarm-xref" title="Reference to Armv8 ARM section">Standard assembler syntax fields</a>.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Qd&gt;</td><td><a name="qd" id="qd"></a>
+        
+          <p class="aml">Is the 128-bit name of the SIMD&amp;FP third source and destination register, encoded in the "D:Vd" field as &lt;Qd&gt;*2.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Qn&gt;</td><td><a name="qn" id="qn"></a>
+        
+          <p class="aml">Is the 128-bit name of the first SIMD&amp;FP source register, encoded in the "N:Vn" field as &lt;Qn&gt;*2.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Qm&gt;</td><td><a name="qm" id="qm"></a>
+        
+          <p class="aml">Is the 128-bit name of the second SIMD&amp;FP source register, encoded in the "M:Vm" field as &lt;Qm&gt;*2.</p>
+        
+      </td></tr></table></div><p class="syntax-notes"></p>
+    <div class="ps" psname="commonps"><a name="commonps" id="commonps"></a><h3 class="pseudocode">Operation</h3>
+      <p class="pseudocode"><a href="shared_pseudocode.html#impl-aarch32.CheckAdvSIMDEnabled.0" title="function: CheckAdvSIMDEnabled()">CheckAdvSIMDEnabled</a>();
+bits(128) operand1 = <a href="shared_pseudocode.html#impl-aarch32.Q.read.1" title="accessor: bits(128) Q[integer n]">Q</a>[n&gt;&gt;1];
+bits(128) operand2 = <a href="shared_pseudocode.html#impl-aarch32.Q.read.1" title="accessor: bits(128) Q[integer n]">Q</a>[m&gt;&gt;1];
+bits(128) addend   = <a href="shared_pseudocode.html#impl-aarch32.Q.read.1" title="accessor: bits(128) Q[integer n]">Q</a>[d&gt;&gt;1];
+
+<a href="shared_pseudocode.html#impl-aarch32.Q.write.1" title="accessor: Q[integer n] = bits(128) value">Q</a>[d&gt;&gt;1] = <a href="shared_pseudocode.html#impl-shared.MatMulAdd.5" title="function: bits(N) MatMulAdd(bits(N) addend, bits(N) op1, bits(N) op2, boolean op1_unsigned, boolean op2_unsigned)">MatMulAdd</a>(addend, operand1, operand2, op1_unsigned, op2_unsigned);</p>
+    </div>
+  <hr /><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="a32_encindex.html">A32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="t32_encindex.html">T32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">
+      Internal version only: isa v01_06, pseudocode v2019-12_rc3_1, sve v2019-12_rc3
+      ; Build timestamp: 2019-12-12T17:34
+    </p><p class="copyconf">
+      Copyright © 2010-2019 Arm Limited or its affiliates. All rights reserved.
+      This document is Non-Confidential.
+    </p></body></html>

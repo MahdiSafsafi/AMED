@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:x86="http://www.felixcloutier.com/x86"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="style.css"></link><title>CVTPD2PS
+		— Convert Packed Double-Precision Floating-Point Values to Packed Single-Precision Floating-Point Values</title></head><body><header></header><h1>CVTPD2PS
+		— Convert Packed Double-Precision Floating-Point Values to Packed Single-Precision Floating-Point Values</h1>
+
+<table>
+<tr>
+<th>Opcode/Instruction</th>
+<th>Op/En</th>
+<th>64/32 bit Mode Support</th>
+<th>CPUID Feature Flag</th>
+<th>Description</th></tr>
+<tr>
+<td>66 0F 5A /r CVTPD2PS xmm1, xmm2/m128</td>
+<td>A</td>
+<td>V/V</td>
+<td>SSE2</td>
+<td>Convert two packed double-precision floating-point values in xmm2/mem to two single-precision floating-point values in xmm1.</td></tr>
+<tr>
+<td>VEX.128.66.0F.WIG 5A /r VCVTPD2PS xmm1, xmm2/m128</td>
+<td>A</td>
+<td>V/V</td>
+<td>AVX</td>
+<td>Convert two packed double-precision floating-point values in xmm2/mem to two single-precision floating-point values in xmm1.</td></tr>
+<tr>
+<td>VEX.256.66.0F.WIG 5A /r VCVTPD2PS xmm1, ymm2/m256</td>
+<td>A</td>
+<td>V/V</td>
+<td>AVX</td>
+<td>Convert four packed double-precision floating-point values in ymm2/mem to four single-precision floating-point values in xmm1.</td></tr>
+<tr>
+<td>EVEX.128.66.0F.W1 5A /r VCVTPD2PS xmm1 {k1}{z}, xmm2/m128/m64bcst</td>
+<td>B</td>
+<td>V/V</td>
+<td>AVX512VL AVX512F</td>
+<td>Convert two packed double-precision floating-point values in xmm2/m128/m64bcst to two single-precision floating-point values in xmm1with writemask k1.</td></tr>
+<tr>
+<td>EVEX.256.66.0F.W1 5A /r VCVTPD2PS xmm1 {k1}{z}, ymm2/m256/m64bcst</td>
+<td>B</td>
+<td>V/V</td>
+<td>AVX512VL AVX512F</td>
+<td>Convert four packed double-precision floating-point values in ymm2/m256/m64bcst to four single-precision floating-point values in xmm1with writemask k1.</td></tr>
+<tr>
+<td>EVEX.512.66.0F.W1 5A /r VCVTPD2PS ymm1 {k1}{z}, zmm2/m512/m64bcst{er}</td>
+<td>B</td>
+<td>V/V</td>
+<td>AVX512F</td>
+<td>Convert eight packed double-precision floating-point values in zmm2/m512/m64bcst to eight single-precision floating-point values in ymm1with writemask k1.</td></tr></table>
+<h2 id="instruction-operand-encoding">Instruction Operand Encoding<a class="anchor" href="#instruction-operand-encoding">
+			¶
+		</a></h2>
+<table>
+<tr>
+<td>Op/En</td>
+<td>Tuple Type</td>
+<td>Operand 1</td>
+<td>Operand 2</td>
+<td>Operand 3</td>
+<td>Operand 4</td></tr>
+<tr>
+<td>A</td>
+<td>NA</td>
+<td>ModRM:reg (w)</td>
+<td>ModRM:r/m (r)</td>
+<td>NA</td>
+<td>NA</td></tr>
+<tr>
+<td>B</td>
+<td>Full</td>
+<td>ModRM:reg (w)</td>
+<td>ModRM:r/m (r)</td>
+<td>NA</td>
+<td>NA</td></tr></table>
+<h2 id="description">Description<a class="anchor" href="#description">
+			¶
+		</a></h2>
+<p>Converts two, four or eight packed double-precision floating-point values in the source operand (second operand) to two, four or eight packed single-precision floating-point values in the destination operand (first operand).</p>
+<p>When a conversion is inexact, the value returned is rounded according to the rounding control bits in the MXCSR register or the embedded rounding control bits.</p>
+<p>EVEX encoded versions: The source operand is a ZMM/YMM/XMM register, a 512/256/128-bit memory location, or a 512/256/128-bit vector broadcasted from a 64-bit memory location. The destination operand is a YMM/XMM/XMM (low 64-bits) register conditionally updated with writemask k1. The upper bits (MAXVL-1:256/128/64) of the corresponding destination are zeroed.</p>
+<p>VEX.256 encoded version: The source operand is a YMM register or 256- bit memory location. The destination operand is an XMM register. The upper bits (MAXVL-1:128) of the corresponding ZMM register destination are zeroed.</p>
+<p>VEX.128 encoded version: The source operand is an XMM register or 128- bit memory location. The destination operand is a XMM register. The upper bits (MAXVL-1:64) of the corresponding ZMM register destination are zeroed.</p>
+<p>128-bit Legacy SSE version: The source operand is an XMM register or 128- bit memory location. The destination operand is an XMM register. Bits[127:64] of the destination XMM register are zeroed. However, the upper Bits (MAXVL-1:128) of the corresponding ZMM register destination are unmodified.</p>
+<p>VEX.vvvv and EVEX.vvvv are reserved and must be 1111b otherwise instructions will #UD.</p>
+<figure id="fig-3-13">
+<svg style="width: 475.848pt; height: 151.0559759999999pt" viewBox="100.7 0.0 401.54 130.87997999999993">
+<g xmlns="http://www.w3.org/2000/svg" style="stroke: none; fill: none">
+<rect height="124.86" style="fill: rgb(0%, 0%, 0%)" width="0.48" x="103.2" y="0.479979999999955"></rect>
+<rect height="124.86" style="fill: rgb(0%, 0%, 0%)" width="0.47998" x="499.20000000000005" y="0.479979999999955"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="396.54" x="103.2" y="0.0"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="396.54" x="103.2" y="125.39999999999998"></rect>
+<path d="M 285.96 86.21997999999996 L 287.46 82.19997999999998 L 287.7 81.59997999999996 L 288.23999999999995 82.01997999999992 L 300.71999999999997 91.31997999999999 L 302.09999999999997 92.33997999999997 L 300.35999999999996 92.21997999999996 L 284.82 90.95997999999997 L 284.15999999999997 90.83997999999997 L 284.4 90.23997999999995 L 284.88 89.93997999999999 L 300.41999999999996 91.19997999999998 L 300.35999999999996 92.21997999999996 L 300.06 92.09997999999996 L 287.58 82.79998 L 288.23999999999995 82.01997999999992 L 288.35999999999996 82.55998 L 286.85999999999996 86.57997999999998" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 284.40000000000003 90.23997999999995 L 285.96000000000004 86.21997999999996 L 286.86 86.57997999999998 L 285.3 90.59997999999996" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 286.38 86.39997999999991 L 287.88 82.37997999999993 L 300.36 91.67997999999989 L 284.82 90.4199799999999" style="fill: rgb(0%, 0%, 0%); fill-rule: evenodd"></path>
+<path d="M 167.46 40.79997999999989 L 166.74 42.659979999999905 L 285.54 87.17997999999989 L 286.26 85.31997999999987" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="37.08" x="393.24" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.32" x="393.24" y="92.03993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.47998" x="430.08" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.32" x="393.0" y="105.53993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="393.0" y="92.0399799999999"></rect>
+<path d="M 404.94 76.85997999999995 L 405.3 76.61997999999994 C 405.972 76.07398 405.486 74.82398 404.52 74.87997999999993L 404.28 74.93997999999999 L 404.1 74.99997999999994 C 403.318 75.58897999999999 403.526 76.73597999999993 404.52 76.9199799999999L 404.76 76.85997999999995 L 404.94 76.85997999999995" style="fill: rgb(0%, 0%, 0%); fill-rule: evenodd"></path>
+<path d="M 404.58 75.89997999999991 L 408.65999999999997 74.51997999999992 L 409.32 74.39997999999991 L 409.38 74.99997999999994 L 410.03999999999996 90.59997999999996 L 410.09999999999997 92.33997999999997 L 409.08 90.89997999999991 L 400.26 77.99997999999994 L 399.9 77.45997999999986 L 400.5 77.21997999999996 L 401.09999999999997 77.45997999999986 L 409.91999999999996 90.35997999999995 L 409.08 90.89997999999991 L 409.02 90.6599799999999 L 408.35999999999996 75.05997999999988 L 409.38 74.99997999999994 L 409.02 75.5399799999999 L 404.94 76.9199799999999" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 400.5 77.21997999999996 L 404.58 75.89997999999991 L 404.94 76.91998000000001 L 400.86 78.23997999999995" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 404.76 76.37997999999993 L 408.84 74.99997999999994 L 409.5 90.59997999999996 L 400.68 77.69997999999998" style="fill: rgb(0%, 0%, 0%); fill-rule: evenodd"></path>
+<path d="M 394.20000000000005 41.399979999999914 L 392.34000000000003 41.99997999999994 L 403.74000000000007 76.19997999999987 L 405.6 75.59997999999996" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 361.86 80.39997999999991 L 361.98 80.21997999999996 L 362.1 80.0399799999999 C 362.41700000000003 79.11097999999993 361.553 78.33597999999995 360.66 78.77997999999991L 360.48 78.89997999999991 L 360.36 79.07997999999986 C 359.802 79.79897999999991 360.54 80.94797999999992 361.5 80.57997999999986L 361.68 80.51997999999992 L 361.86 80.39997999999991" style="fill: rgb(0%, 0%, 0%); fill-rule: evenodd"></path>
+<path d="M 361.20000000000005 79.67997999999989 L 364.32000000000005 76.73997999999983 L 364.80000000000007 76.31997999999987 L 365.1 76.9199799999999 L 372.18000000000006 90.77997999999991 L 372.96000000000004 92.33997999999985 L 371.46000000000004 91.43997999999988 L 358.14000000000004 83.45997999999986 L 357.6 83.09997999999985 L 358.08000000000004 82.61997999999994 L 358.62000000000006 82.55997999999988 L 371.94000000000005 90.5399799999999 L 371.46000000000004 91.43997999999988 L 371.28000000000003 91.19997999999987 L 364.20000000000005 77.33997999999985 L 365.1 76.9199799999999 L 364.98 77.51997999999992 L 361.86000000000007 80.45997999999986" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 358.08 82.61997999999994 L 361.2 79.67997999999989 L 361.85999999999996 80.45997999999997 L 358.74 83.39997999999991" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 361.5 80.0399799999999 L 364.62 77.09997999999985 L 371.7 90.95997999999986 L 358.38 82.97997999999995" style="fill: rgb(0%, 0%, 0%); fill-rule: evenodd"></path>
+<path d="M 326.46 41.0399799999999 L 325.02 42.419979999999896 L 360.41999999999996 80.39997999999991 L 361.85999999999996 79.01997999999992" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 324.96 84.4199799999999 L 325.02 84.17997999999989 L 325.08 83.99997999999994 C 325.229 83.02797999999984 323.82599999999996 82.52297999999985 323.34 83.27997999999991L 323.21999999999997 83.39997999999991 L 323.15999999999997 83.57997999999986 L 323.09999999999997 83.81997999999987 L 323.09999999999997 84.17997999999989 L 323.21999999999997 84.35997999999995 L 323.28 84.5399799999999 L 323.46 84.6599799999999 L 323.58 84.77997999999991 C 324.113 84.95197999999993 324.04999999999995 84.95097999999984 324.53999999999996 84.77997999999991L 324.71999999999997 84.71997999999985 L 324.84 84.5399799999999 L 324.96 84.4199799999999" style="fill: rgb(0%, 0%, 0%); fill-rule: evenodd"></path>
+<path d="M 324.12 83.87997999999993 L 326.22 80.1599799999999 L 326.58 79.61997999999994 L 327.06 80.0399799999999 L 337.98 91.07997999999998 L 339.24 92.33997999999997 L 337.56 91.9199799999999 L 322.38 88.37997999999993 L 321.72 88.25997999999993 L 322.02 87.6599799999999 L 322.56 87.4199799999999 L 337.74 90.95997999999997 L 337.56 91.9199799999999 L 337.26 91.79997999999989 L 326.28000000000003 80.75997999999993 L 327.06 80.0399799999999 L 327.12 80.63997999999992 L 325.02 84.35997999999995" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 322.02 87.6599799999999 L 324.12 83.87997999999993 L 325.02 84.35997999999995 L 322.91999999999996 88.13997999999992" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<path d="M 324.54 84.11997999999994 L 326.64000000000004 80.39997999999991 L 337.62 91.43997999999999 L 322.44 87.89997999999991" style="fill: rgb(0%, 0%, 0%); fill-rule: evenodd"></path>
+<path d="M 248.58 40.85997999999995 L 247.62 42.59997999999996 L 323.58000000000004 84.77997999999991 L 324.54 83.0399799999999" style="fill: rgb(0%, 0%, 0%); fill-rule: nonzero"></path>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="37.14" x="356.1" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.38" x="356.1" y="92.03993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="393.0" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.38" x="355.86" y="105.53993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.47998" x="355.86" y="92.0399799999999"></rect>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="37.14" x="318.96" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.38" x="318.96" y="92.03993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.47998" x="355.86" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.38" x="318.72" y="105.53993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="318.72" y="92.0399799999999"></rect>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="37.14" x="281.82" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.38" x="281.82" y="92.03993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="318.72" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="37.38" x="281.58" y="105.53993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="281.58" y="92.0399799999999"></rect>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="74.22" x="356.1" y="28.199979999999982"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.46000000000001" x="356.1" y="27.959999999999923"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.47998" x="430.08" y="28.19997999999987"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.46000000000001" x="355.86" y="41.45999999999992"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.47998" x="355.86" y="27.959979999999973"></rect>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="74.28" x="133.32" y="28.199979999999982"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.52" x="133.32" y="27.959999999999923"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48" x="207.36" y="28.19997999999987"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.52" x="133.08" y="41.45999999999992"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="133.08" y="27.959979999999973"></rect>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="74.22" x="207.60000000000002" y="28.199979999999982"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.46000000000001" x="207.60000000000002" y="27.959999999999923"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="281.58" y="28.19997999999987"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.46000000000001" x="207.36" y="41.45999999999992"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48" x="207.36" y="27.959979999999973"></rect>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="74.28" x="281.82" y="28.199979999999982"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.52" x="281.82" y="27.959999999999923"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.47998" x="355.86" y="28.19997999999987"></rect>
+<rect height="0.47998" style="fill: rgb(0%, 0%, 0%)" width="74.52" x="281.58" y="41.45999999999992"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="281.58" y="27.959979999999973"></rect>
+<rect height="13.5" style="fill: rgb(100%, 100%, 100%)" width="145.5" x="135.42000000000002" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="145.74" x="135.42000000000002" y="92.03993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48001000000000005" x="280.68" y="92.27997999999991"></rect>
+<rect height="0.48004" style="fill: rgb(0%, 0%, 0%)" width="145.74" x="135.18" y="105.53993999999989"></rect>
+<rect height="13.74" style="fill: rgb(0%, 0%, 0%)" width="0.48" x="135.18" y="92.0399799999999"></rect>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.80058169554718pt; fill: #000" textLength="9.904170745989461" x="315.66" y="38.38388926322614">X1</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.80058169554718pt; fill: #000" textLength="9.844471945989483" x="389.81834685" y="38.38388926322614">X0</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="9.17216670000002" x="156.96" y="38.31087779999996">X3</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="9.17216670000002" x="241.32" y="38.31087779999996">X2</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="15.8825887" x="113.10000000000001" y="38.311307159999956">SRC</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="20.02495481999999" x="113.10000000000001" y="102.45087779999994">DEST</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000001pt; fill: #000" textLength="4.192128800000006" x="204.9" y="102.45087779999992">0</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="9.172166699999991" x="292.92" y="102.45087779999994">X3</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="9.232485099999963" x="330.06" y="102.45087779999994">X2</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="9.172166699999991" x="367.20000000000005" y="102.45087779999994">X1</text>
+<text lengthAdjust="spacingAndGlyphs" style="font-size: 8.414416800000026pt; fill: #000" textLength="9.172166699999991" x="404.28000000000003" y="102.45087779999994">X0</text></g></svg>
+<figcaption><a href="./CVTPD2PS.html#fig-3-13">Figure 3-13</a>. VCVTPD2PS (VEX.256 encoded version)</figcaption></figure>
+<h2 id="operation">Operation<a class="anchor" href="#operation">
+			¶
+		</a></h2>
+<h3 id="vcvtpd2ps--evex-encoded-version--when-src-operand-is-a-register">VCVTPD2PS (EVEX encoded version) when src operand is a register<a class="anchor" href="#vcvtpd2ps--evex-encoded-version--when-src-operand-is-a-register">
+			¶
+		</a></h3>
+<pre>(KL, VL) = (2, 128), (4, 256), (8, 512)
+IF (VL = 512) AND (EVEX.b = 1)
+    THEN
+        SET_RM(EVEX.RC);
+    ELSE
+        SET_RM(MXCSR.RM);
+FI;
+FOR j←0 TO KL-1
+    i←j * 32
+    k←j * 64
+    IF k1[j] OR *no writemask*
+        THEN
+            DEST[i+31:i] ← Convert_Double_Precision_Floating_Point_To_Single_Precision_Floating_Point(SRC[k+63:k])
+        ELSE
+            IF *merging-masking* ; merging-masking
+                THEN *DEST[i+31:i] remains unchanged*
+                ELSE ; zeroing-masking
+                    DEST[i+31:i] ← 0
+            FI
+    FI;
+ENDFOR
+DEST[MAXVL-1:VL/2] ← 0
+</pre>
+<h3 id="vcvtpd2ps--evex-encoded-version--when-src-operand-is-a-memory-source">VCVTPD2PS (EVEX encoded version) when src operand is a memory source<a class="anchor" href="#vcvtpd2ps--evex-encoded-version--when-src-operand-is-a-memory-source">
+			¶
+		</a></h3>
+<pre>(KL, VL) = (2, 128), (4, 256), (8, 512)
+FOR j←0 TO KL-1
+    i←j * 32
+    k←j * 64
+    IF k1[j] OR *no writemask*
+        THEN
+            IF (EVEX.b = 1)
+                THEN
+                    DEST[i+31:i] ←Convert_Double_Precision_Floating_Point_To_Single_Precision_Floating_Point(SRC[63:0])
+                ELSE
+                    DEST[i+31:i] ← Convert_Double_Precision_Floating_Point_To_Single_Precision_Floating_Point(SRC[k+63:k])
+            FI;
+        ELSE
+            IF *merging-masking* ; merging-masking
+                THEN *DEST[i+31:i] remains unchanged*
+                ELSE ; zeroing-masking
+                    DEST[i+31:i] ← 0
+            FI
+    FI;
+ENDFOR
+DEST[MAXVL-1:VL/2] ← 0
+</pre>
+<h3 id="vcvtpd2ps--vex-256-encoded-version-">VCVTPD2PS (VEX.256 encoded version)<a class="anchor" href="#vcvtpd2ps--vex-256-encoded-version-">
+			¶
+		</a></h3>
+<pre>DEST[31:0] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[63:0])
+DEST[63:32] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[127:64])
+DEST[95:64] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[191:128])
+DEST[127:96] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[255:192)
+DEST[MAXVL-1:128] ← 0
+</pre>
+<h3 id="vcvtpd2ps--vex-128-encoded-version-">VCVTPD2PS (VEX.128 encoded version)<a class="anchor" href="#vcvtpd2ps--vex-128-encoded-version-">
+			¶
+		</a></h3>
+<pre>DEST[31:0] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[63:0])
+DEST[63:32] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[127:64])
+DEST[MAXVL-1:64] ← 0
+</pre>
+<h3 id="cvtpd2ps--128-bit-legacy-sse-version-">CVTPD2PS (128-bit Legacy SSE version)<a class="anchor" href="#cvtpd2ps--128-bit-legacy-sse-version-">
+			¶
+		</a></h3>
+<pre>DEST[31:0] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[63:0])
+DEST[63:32] ← Convert_Double_Precision_To_Single_Precision_Floating_Point(SRC[127:64])
+DEST[127:64] ← 0
+DEST[MAXVL-1:128] (unmodified)
+</pre>
+<h2 id="intel-c-c++-compiler-intrinsic-equivalent">Intel C/C++ Compiler Intrinsic Equivalent<a class="anchor" href="#intel-c-c++-compiler-intrinsic-equivalent">
+			¶
+		</a></h2>
+<pre>VCVTPD2PS __m256 _mm512_cvtpd_ps( __m512d a);
+</pre>
+<pre>VCVTPD2PS __m256 _mm512_mask_cvtpd_ps( __m256 s, __mmask8 k, __m512d a);
+</pre>
+<pre>VCVTPD2PS __m256 _mm512_maskz_cvtpd_ps( __mmask8 k, __m512d a);
+</pre>
+<pre>VCVTPD2PS __m256 _mm512_cvt_roundpd_ps( __m512d a, int r);
+</pre>
+<pre>VCVTPD2PS __m256 _mm512_mask_cvt_roundpd_ps( __m256 s, __mmask8 k, __m512d a, int r);
+</pre>
+<pre>VCVTPD2PS __m256 _mm512_maskz_cvt_roundpd_ps( __mmask8 k, __m512d a, int r);
+</pre>
+<pre>VCVTPD2PS __m128 _mm256_mask_cvtpd_ps( __m128 s, __mmask8 k, __m256d a);
+</pre>
+<pre>VCVTPD2PS __m128 _mm256_maskz_cvtpd_ps( __mmask8 k, __m256d a);
+</pre>
+<pre>VCVTPD2PS __m128 _mm_mask_cvtpd_ps( __m128 s, __mmask8 k, __m128d a);
+</pre>
+<pre>VCVTPD2PS __m128 _mm_maskz_cvtpd_ps( __mmask8 k, __m128d a);
+</pre>
+<pre>VCVTPD2PS __m128 _mm256_cvtpd_ps (__m256d a)
+</pre>
+<pre>CVTPD2PS __m128 _mm_cvtpd_ps (__m128d a)
+</pre>
+<h2 class="exceptions" id="simd-floating-point-exceptions">SIMD Floating-Point Exceptions<a class="anchor" href="#simd-floating-point-exceptions">
+			¶
+		</a></h2>
+<p>Invalid, Precision, Underflow, Overflow, Denormal</p>
+<h2 class="exceptions" id="other-exceptions">Other Exceptions<a class="anchor" href="#other-exceptions">
+			¶
+		</a></h2>
+<p>VEX-encoded instructions, see Exceptions Type 2;</p>
+<p>EVEX-encoded instructions, see Exceptions Type E2.</p>
+<table>
+<tr>
+<td>#UD</td>
+<td>If VEX.vvvv != 1111B or EVEX.vvvv != 1111B.</td></tr></table><footer><p>
+		This UNOFFICIAL, mechanically-separated, non-verified reference is provided for convenience, but it may be
+		inc<span style="opacity: 0.2">omp</span>lete or b<sub>r</sub>oke<sub>n</sub> in various obvious or non-obvious
+		ways. Refer to <a href="https://software.intel.com/sites/default/files/managed/39/c5/325462-sdm-vol-1-2abcd-3abcd.pdf">Intel® 64 and IA-32 Architectures Software Developer’s Manual</a> for anything serious.
+	</p></footer></body></html>

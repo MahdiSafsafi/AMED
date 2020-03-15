@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="insn.css" /><meta name="generator" content="iform.xsl" /><title>NMATCH</title></head><body><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr /><h2 class="instruction-section">NMATCH</h2><p id="desc">Detect no matching elements, setting the condition flags.
+          <p></p><p>
+      <p class="aml">This instruction compares each active 8-bit or 16-bit character in the first source vector with all of the characters in the corresponding 128-bit segment of the second source vector. Where the first source element detects no matching characters in the second segment it places true in the corresponding element of the destination predicate, otherwise false. Inactive elements in the destination predicate register are set to zero. Sets the <span class="arm-defined-word">First</span> (N), <span class="arm-defined-word">None</span> (Z), <span class="arm-defined-word">!Last</span> (C) condition flags based on the predicate result, and the V flag to zero.</p>
+    </p></p>
+    <p class="desc"></p><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="r">1</td><td colspan="2" class="lr">size</td><td class="lr">1</td><td colspan="5" class="lr">Zm</td><td class="l">1</td><td>0</td><td class="r">0</td><td colspan="3" class="lr">Pg</td><td colspan="5" class="lr">Zn</td><td class="lr">1</td><td colspan="4" class="lr">Pd</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">SVE2</h4><p class="asm-code"><a name="nmatch_p_p_zz_" id="nmatch_p_p_zz_"></a>NMATCH  <a href="#pd" title="Destination scalable predicate register (field &quot;Pd&quot;)">&lt;Pd&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&lt;0&gt;&quot;) [B,H]">&lt;T&gt;</a>, <a href="#pg" title="Governing scalable predicate register P0-P7 (field &quot;Pg&quot;)">&lt;Pg&gt;</a>/Z, <a href="#zn" title="First source scalable vector register (field &quot;Zn&quot;)">&lt;Zn&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&lt;0&gt;&quot;) [B,H]">&lt;T&gt;</a>, <a href="#zm" title="Second source scalable vector register (field &quot;Zm&quot;)">&lt;Zm&gt;</a>.<a href="#t" title="Size specifier (field &quot;size&lt;0&gt;&quot;) [B,H]">&lt;T&gt;</a></p></div><p class="pseudocode">if !HaveSVE2() then UNDEFINED;
+if size == '1x' then UNDEFINED;
+integer esize = 8 &lt;&lt; <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(size);
+integer g = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Pg);
+integer d = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Pd);
+integer n = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zn);
+integer m = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zm);</p>
+  <p class="encoding-notes"></p><h3 class="explanations">Assembler Symbols</h3><div class="explanations"><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Pd&gt;</td><td><a name="pd" id="pd"></a>
+        
+          <p class="aml">Is the name of the destination scalable predicate register, encoded in the "Pd" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;T&gt;</td><td><a name="t" id="t"></a>
+        Is the size specifier, 
+    encoded in 
+    <q>size&lt;0&gt;</q>:
+      
+        <table class="valuetable">
+          
+            <thead>
+              <tr>
+                <th class="bitfield">size&lt;0&gt;</th>
+                <th class="symbol">&lt;T&gt;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="bitfield">0</td>
+                <td class="symbol">B</td>
+              </tr>
+              <tr>
+                <td class="bitfield">1</td>
+                <td class="symbol">H</td>
+              </tr>
+            </tbody>
+          
+        </table>
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Pg&gt;</td><td><a name="pg" id="pg"></a>
+        
+          <p class="aml">Is the name of the governing scalable predicate register P0-P7, encoded in the "Pg" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zn&gt;</td><td><a name="zn" id="zn"></a>
+        
+          <p class="aml">Is the name of the first source scalable vector register, encoded in the "Zn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zm&gt;</td><td><a name="zm" id="zm"></a>
+        
+          <p class="aml">Is the name of the second source scalable vector register, encoded in the "Zm" field.</p>
+        
+      </td></tr></table></div><p class="syntax-notes"></p>
+    <div class="ps" psname="commonps"><a name="commonps" id="commonps"></a><h3 class="pseudocode">Operation</h3>
+      <p class="pseudocode">CheckSVEEnabled();
+integer elements = VL DIV esize;
+integer eltspersegment = 128 DIV esize;
+bits(PL) mask = P[g];
+bits(VL) operand1 = Z[n];
+bits(VL) operand2 = Z[m];
+bits(PL) result;
+
+for e = 0 to elements-1
+    if ElemP[mask, e, esize] == '1' then
+        integer segmentbase = e - e MOD eltspersegment;
+        ElemP[result, e, esize] = '1';
+        bits(esize) element1 = <a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand1, e, esize];
+        for i = segmentbase to segmentbase + eltspersegment - 1
+            bits(esize) element2 = <a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand2, i, esize];
+            if element1 == element2 then
+                ElemP[result, e, esize] = '0';
+    else
+        ElemP[result, e, esize] = '0';
+
+PSTATE.&lt;N,Z,C,V&gt; = PredTest(mask, result, esize);
+P[d] = result;</p>
+    </div>
+  <hr /><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">
+      Internal version only: isa v31.05b, AdvSIMD v29.02, pseudocode v2019-12_rc3_1, sve v2019-12_rc3
+      ; Build timestamp: 2019-12-13T11:35
+    </p><p class="copyconf">
+      Copyright © 2010-2019 Arm Limited or its affiliates. All rights reserved.
+      This document is Non-Confidential.
+    </p></body></html>

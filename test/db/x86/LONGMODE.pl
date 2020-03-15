@@ -1,0 +1,31 @@
+use strict;
+use warnings;
+
+TEST('movsxd rax, edx              ', [0x48,0x63,0xc2                    ], 'MODE64');
+TEST('movsxd rax, r8d              ', [0x49,0x63,0xc0                    ], 'MODE64');
+TEST('movsxd rax, dword [rsp+80]   ', [0x48,0x63,0x44,0x24,0x50          ], 'MODE64');
+TEST('movsxd rax, edi              ', [0x48,0x63,0xc7                    ], 'MODE64');
+TEST('movsxd rax, esi              ', [0x48,0x63,0xc6                    ], 'MODE64');
+TEST('movsxd rax, ebx              ', [0x48,0x63,0xc3                    ], 'MODE64');
+TEST('movsxd rax, r11d             ', [0x49,0x63,0xc3                    ], 'MODE64');
+TEST('movsxd rsi, dword [rax]      ', [0x48,0x63,0x30                    ], 'MODE64');
+TEST('movsxd rax, dword [rbp+4]    ', [0x48,0x63,0x45,0x04               ], 'MODE64');
+TEST('movsxd rax, ecx              ', [0x48,0x63,0xc1                    ], 'MODE64');
+TEST('movsxd rax, dword [rcx+0xd4] ', [0x48,0x63,0x81,0xd4,0x00,0x00,0x00], 'MODE64');
+TEST('movsxd rax, r9d              ', [0x49,0x63,0xc1                    ], 'MODE64');
+TEST('movsxd rax, dword [r14+16]   ', [0x49,0x63,0x46,0x10               ], 'MODE64');
+TEST('movsxd rax, dword [rdx]      ', [0x48,0x63,0x02                    ], 'MODE64');
+TEST('movsxd rax, dword [rbx+16]   ', [0x48,0x63,0x43,0x10               ], 'MODE64');
+TEST('movsxd rax, dword [rdi+16]   ', [0x48,0x63,0x47,0x10               ], 'MODE64');
+TEST('movsxd rax, dword [rbp+0x4e8]', [0x48,0x63,0x85,0xe8,0x04,0x00,0x00], 'MODE64');
+TEST('movsxd r12, dword [r14]      ', [0x4d,0x63,0x26                    ], 'MODE64');
+TEST('movsxd rax, dword [rbx+32]   ', [0x48,0x63,0x43,0x20               ], 'MODE64');
+TEST('movsxd rax, dword [rdi+4]    ', [0x48,0x63,0x47,0x04               ], 'MODE64');
+TEST('movsxd rax, dword [r15]      ', [0x49,0x63,0x07                    ], 'MODE64');
+TEST('movsxd rax, dword [rdi+24]   ', [0x48,0x63,0x47,0x18               ], 'MODE64');
+TEST('movsxd rax, dword [rbx+4]    ', [0x48,0x63,0x43,0x04               ], 'MODE64');
+TEST('movsxd rax, dword [rbx+8]    ', [0x48,0x63,0x43,0x08               ], 'MODE64');
+TEST('movsxd rax, dword [r14+24]   ', [0x49,0x63,0x46,0x18               ], 'MODE64');
+TEST('movsxd rax, dword [rbx+28]   ', [0x48,0x63,0x43,0x1c               ], 'MODE64');
+TEST('movsxd rax, dword [rbx+24]   ', [0x48,0x63,0x43,0x18               ], 'MODE64');
+

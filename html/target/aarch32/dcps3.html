@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="insn.css" /><meta name="generator" content="iform.xsl" /><title>DCPS3 -- AArch32</title></head><body><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="a32_encindex.html">A32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="t32_encindex.html">T32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr /><h2 class="instruction-section">DCPS3</h2><p id="desc">
+      <p class="aml">Debug Change PE State to EL3 allows the debugger to move the PE into EL3 from a lower Exception Level or to a specific mode at the current Exception Level.</p>
+      <p class="aml"><span class="asm-code">DCPS3</span> is <span class="arm-defined-word">undefined</span> if any of:</p>
+      <ul>
+        <li>The PE is in Non-debug state.</li>
+        <li>EL3 is not implemented.</li>
+        <li>EDSCR.SDD is set to 1.</li>
+      </ul>
+      <p class="aml">When the PE executes <span class="asm-code">DCPS3</span>:</p>
+      <ul>
+        <li>If EL3 is using AArch32, the PE enters Monitor mode and LR_mon, SPSR_mon, DLR and DSPSR become <span class="arm-defined-word">UNKNOWN</span>. If <span class="asm-code">DCPS3</span> is executed in Monitor mode, SCR.NS is cleared to 0.</li>
+        <li>If EL3 is using AArch64, the PE enters EL3 using AArch64, selects SP_EL3, and ELR_EL3, ESR_EL3, SPSR_EL3, DLR_EL0 and DSPSR_EL0 become <span class="arm-defined-word">UNKNOWN</span>.</li>
+      </ul>
+      <p class="aml">For more information on the operation of this instruction, see <a class="armarm-xref" title="Reference to Armv8 ARM section">DCPS</a>.</p>
+    </p>
+    <h3 class="classheading"><a name="t1" id="t1"></a>T1</h3><p class="desc"></p><div class="regdiagram-16x2"><table class="regdiagram"><thead><tr><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td class="r">0</td><td class="l">1</td><td>1</td><td>1</td><td class="r">1</td><td class="l">1</td><td>0</td><td>0</td><td class="r">0</td><td class="l">0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="r">0</td><td class="l">1</td><td class="r">1</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">T1</h4><p class="asm-code"><a name="DCPS3_T1" id="DCPS3_T1"></a>DCPS3</p></div><p class="pseudocode">if !<a href="shared_pseudocode.html#impl-shared.HaveEL.1" title="function: boolean HaveEL(bits(2) el)">HaveEL</a>(<a href="shared_pseudocode.html#EL3" title="constant bits(2) EL3 = '11'">EL3</a>) then UNDEFINED;</p>
+  <p class="encoding-notes"></p>
+    <div class="ps" psname="commonps"><a name="commonps" id="commonps"></a><h3 class="pseudocode">Operation</h3>
+      <p class="pseudocode">if !<a href="shared_pseudocode.html#impl-shared.Halted.0" title="function: boolean Halted()">Halted</a>() || EDSCR.SDD == '1' then UNDEFINED;
+
+if <a href="shared_pseudocode.html#impl-shared.ELUsingAArch32.1" title="function: boolean ELUsingAArch32(bits(2) el)">ELUsingAArch32</a>(<a href="shared_pseudocode.html#EL3" title="constant bits(2) EL3 = '11'">EL3</a>) then
+    from_secure = <a href="shared_pseudocode.html#impl-shared.IsSecure.0" title="function: boolean IsSecure()">IsSecure</a>();
+    if PSTATE.M == <a href="shared_pseudocode.html#M32_Monitor" title="constant bits(5) M32_Monitor = '10110'">M32_Monitor</a> then SCR.NS = '0';
+    <a href="shared_pseudocode.html#AArch32.WriteMode.1" title="function: AArch32.WriteMode(bits(5) mode)">AArch32.WriteMode</a>(<a href="shared_pseudocode.html#M32_Monitor" title="constant bits(5) M32_Monitor = '10110'">M32_Monitor</a>);
+    if <a href="shared_pseudocode.html#impl-shared.HavePANExt.0" title="function: boolean HavePANExt()">HavePANExt</a>() then
+        if !from_secure then
+            PSTATE.PAN = '0';
+        elsif SCTLR.SPAN == '0' then
+            PSTATE.PAN = '1';
+    PSTATE.E = SCTLR.EE;
+
+    LR_mon = bits(32) UNKNOWN;
+    SPSR_mon = bits(32) UNKNOWN;
+
+    DLR = bits(32) UNKNOWN;
+    DSPSR = bits(32) UNKNOWN;
+else                                        // Targeting EL3 using AArch64
+    <a href="shared_pseudocode.html#AArch64.MaybeZeroRegisterUppers.0" title="function: AArch64.MaybeZeroRegisterUppers()">AArch64.MaybeZeroRegisterUppers</a>();
+    MaybeZeroSVEUppers(EL3);
+    PSTATE.nRW = '0';
+    PSTATE.SP = '1';
+    PSTATE.EL = <a href="shared_pseudocode.html#EL3" title="constant bits(2) EL3 = '11'">EL3</a>;
+    if <a href="shared_pseudocode.html#impl-shared.HaveUAOExt.0" title="function: boolean HaveUAOExt()">HaveUAOExt</a>() then PSTATE.UAO = '0';
+
+    ELR_EL3 = bits(64) UNKNOWN;
+    ESR_EL3 = bits(32) UNKNOWN;
+    SPSR_EL3 = bits(32) UNKNOWN;
+
+    DLR_EL0 = bits(64) UNKNOWN;
+    DSPSR_EL0 = bits(32) UNKNOWN;
+
+    sync_errors = <a href="shared_pseudocode.html#impl-shared.HaveIESB.0" title="function: boolean HaveIESB()">HaveIESB</a>() &amp;&amp; SCTLR_EL3.IESB == '1';
+    if <a href="shared_pseudocode.html#impl-shared.HaveDoubleFaultExt.0" title="function: boolean HaveDoubleFaultExt()">HaveDoubleFaultExt</a>() &amp;&amp; SCR_EL3.EA == '1' &amp;&amp; SCR_EL3.NMEA == '1' then
+        sync_errors = TRUE;
+    // SCTLR_EL3.IESB might be ignored in Debug state.
+    if !<a href="shared_pseudocode.html#impl-shared.ConstrainUnpredictableBool.1" title="function: boolean ConstrainUnpredictableBool(Unpredictable which)">ConstrainUnpredictableBool</a>(<a href="shared_pseudocode.html#Unpredictable_IESBinDebug" title="enumeration Unpredictable { Unpredictable_WBOVERLAPLD,&#13;  Unpredictable_WBOVERLAPST,&#13;  Unpredictable_LDPOVERLAP,&#13;  Unpredictable_BASEOVERLAP,&#13;  Unpredictable_DATAOVERLAP,&#13;  Unpredictable_DEVPAGE2,&#13;  Unpredictable_INSTRDEVICE,&#13;  Unpredictable_RESCPACR,&#13;  Unpredictable_RESMAIR,&#13;  Unpredictable_RESTEXCB,&#13;  Unpredictable_RESPRRR,&#13;  Unpredictable_RESDACR,&#13;  Unpredictable_RESVTCRS,&#13;  Unpredictable_RESTnSZ,&#13;  Unpredictable_RESTCF,&#13;  Unpredictable_OORTnSZ,&#13;  Unpredictable_LARGEIPA,&#13;  Unpredictable_ESRCONDPASS,&#13;  Unpredictable_ILZEROIT,&#13;  Unpredictable_ILZEROT,&#13;  Unpredictable_BPVECTORCATCHPRI,&#13;  Unpredictable_VCMATCHHALF,&#13;  Unpredictable_VCMATCHDAPA,&#13;  Unpredictable_WPMASKANDBAS,&#13;  Unpredictable_WPBASCONTIGUOUS,&#13;  Unpredictable_RESWPMASK,&#13;  Unpredictable_WPMASKEDBITS,&#13;  Unpredictable_RESBPWPCTRL,&#13;  Unpredictable_BPNOTIMPL,&#13;  Unpredictable_RESBPTYPE,&#13;  Unpredictable_BPNOTCTXCMP,&#13;  Unpredictable_BPMATCHHALF,&#13;  Unpredictable_BPMISMATCHHALF,&#13;  Unpredictable_RESTARTALIGNPC,&#13;  Unpredictable_RESTARTZEROUPPERPC,&#13;  Unpredictable_ZEROUPPER,&#13;  Unpredictable_ERETZEROUPPERPC,&#13;  Unpredictable_A32FORCEALIGNPC,&#13;  Unpredictable_SMD,&#13;  Unpredictable_NONFAULT,&#13;  Unpredictable_SVEZEROUPPER,&#13;  Unpredictable_SVELDNFDATA,&#13;  Unpredictable_SVELDNFZERO,&#13;  Unpredictable_AFUPDATE,&#13;  Unpredictable_IESBinDebug,&#13;  Unpredictable_BADPMSFCR,&#13;  Unpredictable_ZEROBTYPE,&#13;  Unpredictable_EL2TIMESTAMP,&#13; Unpredictable_EL1TIMESTAMP,&#13;  Unpredictable_CLEARERRITEZERO}">Unpredictable_IESBinDebug</a>) then
+        sync_errors = FALSE;
+    if sync_errors then <a href="shared_pseudocode.html#impl-shared.SynchronizeErrors.0" title="function: SynchronizeErrors()">SynchronizeErrors</a>();
+
+<a href="shared_pseudocode.html#impl-shared.UpdateEDSCRFields.0" title="function: UpdateEDSCRFields()">UpdateEDSCRFields</a>();                        // Update EDSCR PE state flags</p>
+    </div>
+  <hr /><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="a32_encindex.html">A32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="t32_encindex.html">T32 Instructions by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">
+      Internal version only: isa v01_06, pseudocode v2019-12_rc3_1, sve v2019-12_rc3
+      ; Build timestamp: 2019-12-12T17:34
+    </p><p class="copyconf">
+      Copyright © 2010-2019 Arm Limited or its affiliates. All rights reserved.
+      This document is Non-Confidential.
+    </p></body></html>

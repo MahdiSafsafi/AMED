@@ -1,0 +1,126 @@
+# sys aliases:
+# ------------
+
+type=Sys_AT   op1=000  CRn=0111	 CRm=1000  op2=000	token=S1E1R	
+type=Sys_AT   op1=000  CRn=0111	 CRm=1000  op2=001	token=S1E1W	
+type=Sys_AT   op1=000  CRn=0111	 CRm=1000  op2=010	token=S1E0R	
+type=Sys_AT   op1=000  CRn=0111	 CRm=1000  op2=011	token=S1E0W	
+type=Sys_AT   op1=000  CRn=0111	 CRm=1001  op2=000	token=S1E1RP	    arch=ARMv8.2-ATS1E1
+type=Sys_AT   op1=000  CRn=0111	 CRm=1001  op2=001	token=S1E1WP	    arch=ARMv8.2-ATS1E1
+type=Sys_AT   op1=100  CRn=0111	 CRm=1000  op2=000	token=S1E2R	
+type=Sys_AT   op1=100  CRn=0111	 CRm=1000  op2=001	token=S1E2W	
+type=Sys_AT   op1=100  CRn=0111	 CRm=1000  op2=100	token=S12E1R	
+type=Sys_AT   op1=100  CRn=0111	 CRm=1000  op2=101	token=S12E1W	
+type=Sys_AT   op1=100  CRn=0111	 CRm=1000  op2=110	token=S12E0R	
+type=Sys_AT   op1=100  CRn=0111	 CRm=1000  op2=111	token=S12E0W	
+type=Sys_AT   op1=110  CRn=0111	 CRm=1000  op2=000	token=S1E3R	
+type=Sys_AT   op1=110  CRn=0111	 CRm=1000  op2=001	token=S1E3W	
+type=Sys_DC   op1=000  CRn=0111	 CRm=0110  op2=001	token=IVAC	
+type=Sys_DC   op1=000  CRn=0111	 CRm=0110  op2=010	token=ISW	
+type=Sys_DC   op1=000  CRn=0111	 CRm=0110  op2=011	token=IGVAC	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=000  CRn=0111	 CRm=0110  op2=100	token=IGSW	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=000  CRn=0111	 CRm=0110  op2=101	token=IGDVAC	    arch=ARMv8.5-MemTag
+type=Sys_DC   op1=000  CRn=0111	 CRm=0110  op2=110	token=IGDSW	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=000  CRn=0111	 CRm=1010  op2=010	token=CSW	        
+type=Sys_DC   op1=000  CRn=0111	 CRm=1010  op2=100	token=CGSW	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=000  CRn=0111	 CRm=1010  op2=110	token=CGDSW	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=000  CRn=0111	 CRm=1110  op2=010	token=CISW	        
+type=Sys_DC   op1=000  CRn=0111	 CRm=1110  op2=100	token=CIGSW	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=000  CRn=0111	 CRm=1110  op2=110	token=CIGDSW	    arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=0100  op2=001	token=ZVA	        
+type=Sys_DC   op1=011  CRn=0111	 CRm=0100  op2=011	token=GVA	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=0100  op2=100	token=GZVA	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1010  op2=001	token=CVAC	        
+type=Sys_DC   op1=011  CRn=0111	 CRm=1010  op2=011	token=CGVAC	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1010  op2=101	token=CGDVAC	    arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1011  op2=001	token=CVAU	        
+type=Sys_DC   op1=011  CRn=0111	 CRm=1100  op2=001	token=CVAP	        arch=ARMv8.2-DCPoP
+type=Sys_DC   op1=011  CRn=0111	 CRm=1100  op2=011	token=CGVAP	        arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1100  op2=101	token=CGDVAP	    arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1101  op2=001	token=CVADP	        arch=ARMv8.2-DCCVADP
+type=Sys_DC   op1=011  CRn=0111	 CRm=1101  op2=011	token=CGVADP	    arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1101  op2=101	token=CGDVADP	    arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1110  op2=001	token=CIVAC	        
+type=Sys_DC   op1=011  CRn=0111	 CRm=1110  op2=011	token=CIGVAC	    arch=ARMv8.5-MemTag
+type=Sys_DC   op1=011  CRn=0111	 CRm=1110  op2=101	token=CIGDVAC	    arch=ARMv8.5-MemTag
+type=Sys_IC   op1=000  CRn=0111	 CRm=0001  op2=000	token=IALLUIS
+type=Sys_IC   op1=000  CRn=0111	 CRm=0101  op2=000	token=IALLU
+type=Sys_IC   op1=011  CRn=0111	 CRm=0101  op2=001	token=IVAU
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0001  op2=000	token=VMALLE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0001  op2=001	token=VAE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0001  op2=010	token=ASIDE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0001  op2=011	token=VAAE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0001  op2=101	token=VALE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0001  op2=111	token=VAALE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0010  op2=001	token=RVAE1IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0010  op2=011	token=RVAAE1IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0010  op2=101	token=RVALE1IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0010  op2=111	token=RVAALE1IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0011  op2=000	token=VMALLE1IS	
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0011  op2=001	token=VAE1IS
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0011  op2=010	token=ASIDE1IS
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0011  op2=011	token=VAAE1IS
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0011  op2=101	token=VALE1IS
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0011  op2=111	token=VAALE1IS
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0101  op2=001	token=RVAE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0101  op2=011	token=RVAAE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0101  op2=101	token=RVALE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0101  op2=111	token=RVAALE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0110  op2=001	token=RVAE1	        arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0110  op2=011	token=RVAAE1	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0110  op2=101	token=RVALE1	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0110  op2=111	token=RVAALE1	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0111  op2=000	token=VMALLE1
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0111  op2=001	token=VAE1
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0111  op2=010	token=ASIDE1
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0111  op2=011	token=VAAE1
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0111  op2=101	token=VALE1
+type=Sys_TLBI op1=000  CRn=1000	 CRm=0111  op2=111	token=VAALE1
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0000  op2=001	token=IPAS2E1IS
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0000  op2=010	token=RIPAS2E1IS	arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0000  op2=101	token=IPAS2LE1IS
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0000  op2=110	token=RIPAS2LE1IS	arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0001  op2=000	token=ALLE2OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0001  op2=001	token=VAE2OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0001  op2=100	token=ALLE1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0001  op2=101	token=VALE2OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0001  op2=110	token=VMALLS12E1OS	arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0010  op2=001	token=RVAE2IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0010  op2=101	token=RVALE2IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0011  op2=000	token=ALLE2IS
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0011  op2=001	token=VAE2IS
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0011  op2=100	token=ALLE1IS
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0011  op2=101	token=VALE2IS
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0011  op2=110	token=VMALLS12E1IS
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=000	token=IPAS2E1OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=001	token=IPAS2E1
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=010	token=RIPAS2E1	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=011	token=RIPAS2E1OS	arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=100	token=IPAS2LE1OS	arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=101	token=IPAS2LE1
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=110	token=RIPAS2LE1	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0100  op2=111	token=RIPAS2LE1OS	arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0101  op2=001	token=RVAE2OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0101  op2=101	token=RVALE2OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0110  op2=001	token=RVAE2	        arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0110  op2=101	token=RVALE2	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0111  op2=000	token=ALLE2
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0111  op2=001	token=VAE2
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0111  op2=100	token=ALLE1
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0111  op2=101	token=VALE2
+type=Sys_TLBI op1=100  CRn=1000	 CRm=0111  op2=110	token=VMALLS12E1
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0001  op2=000	token=ALLE3OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0001  op2=001	token=VAE3OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0001  op2=101	token=VALE3OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0010  op2=001	token=RVAE3IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0010  op2=101	token=RVALE3IS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0011  op2=000	token=ALLE3IS	    
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0011  op2=001	token=VAE3IS	    
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0011  op2=101	token=VALE3IS	    
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0101  op2=001	token=RVAE3OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0101  op2=101	token=RVALE3OS	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0110  op2=001	token=RVAE3	        arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0110  op2=101	token=RVALE3	    arch=ARMv8.4-TLBI
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0111  op2=000	token=ALLE3
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0111  op2=001	token=VAE3
+type=Sys_TLBI op1=110  CRn=1000	 CRm=0111  op2=101	token=VALE3

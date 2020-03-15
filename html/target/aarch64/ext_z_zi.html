@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="insn.css" /><meta name="generator" content="iform.xsl" /><title>EXT</title></head><body><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr /><h2 class="instruction-section">EXT</h2><p id="desc">Extract vector from pair of vectors.
+          <p></p><p>
+      <p class="aml">Copy the indexed byte up to the last byte of the first source vector to the bottom of the result vector, then fill the remainder of the result starting from the first byte of the second source vector. The result is placed destructively in the destination and first source vector, or constructively in the destination vector. This instruction is unpredicated.</p>
+      <p class="aml">An index that is greater than or equal to the vector length in bytes is treated as zero, resulting in the first source vector being copied to the result unchanged.</p>
+    </p></p>
+    <p class="desc">
+      It has encodings from 2 classes:
+      <a href="#ext_z_zi_con">Constructive</a>
+       and 
+      <a href="#ext_z_zi_des">Destructive</a>
+    </p>
+    <h3 class="classheading"><a name="ext_z_zi_con" id="ext_z_zi_con"></a>Constructive</h3><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td class="r">1</td><td colspan="5" class="lr">imm8h</td><td class="l">0</td><td>0</td><td class="r">0</td><td colspan="3" class="lr">imm8l</td><td colspan="5" class="lr">Zn</td><td colspan="5" class="lr">Zd</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">Constructive</h4><p class="asm-code"><a name="ext_z_zi_con" id="ext_z_zi_con"></a>EXT     <a href="#zd" title="Destination scalable vector register (field &quot;Zd&quot;)">&lt;Zd&gt;</a>.B, { <a href="#zn1" title="First scalable vector register of a multi-vector sequence (field &quot;Zn&quot;)">&lt;Zn1&gt;</a>.B, <a href="#zn2" title="Second scalable vector register of a multi-vector sequence (field &quot;Zn&quot;)">&lt;Zn2&gt;</a>.B }, #<a href="#imm" title="Unsigned immediate operand [0-255] (field &quot;imm8h:imm8l&quot;)">&lt;imm&gt;</a></p></div><p class="pseudocode">if !HaveSVE2() then UNDEFINED;
+integer esize = 8;
+integer dst = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zd);
+integer s1 = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zn);
+integer s2 = (s1 + 1) MOD 32;
+integer position = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(imm8h:imm8l);</p>
+    <h3 class="classheading"><a name="ext_z_zi_des" id="ext_z_zi_des"></a>Destructive</h3><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td class="r">1</td><td colspan="5" class="lr">imm8h</td><td class="l">0</td><td>0</td><td class="r">0</td><td colspan="3" class="lr">imm8l</td><td colspan="5" class="lr">Zm</td><td colspan="5" class="lr">Zdn</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">Destructive</h4><p class="asm-code"><a name="ext_z_zi_des" id="ext_z_zi_des"></a>EXT     <a href="#zdn" title="First source and destination scalable vector register (field &quot;Zdn&quot;)">&lt;Zdn&gt;</a>.B, <a href="#zdn" title="First source and destination scalable vector register (field &quot;Zdn&quot;)">&lt;Zdn&gt;</a>.B, <a href="#zm" title="Second source scalable vector register (field &quot;Zm&quot;)">&lt;Zm&gt;</a>.B, #<a href="#imm" title="Unsigned immediate operand [0-255] (field &quot;imm8h:imm8l&quot;)">&lt;imm&gt;</a></p></div><p class="pseudocode">if !HaveSVE() then UNDEFINED;
+integer esize = 8;
+integer dst = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zdn);
+integer s1 = dst;
+integer s2 = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zm);
+integer position = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(imm8h:imm8l);</p>
+  <p class="encoding-notes"></p><h3 class="explanations">Assembler Symbols</h3><div class="explanations"><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zd&gt;</td><td><a name="zd" id="zd"></a>
+        
+          <p class="aml">Is the name of the destination scalable vector register, encoded in the "Zd" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zn1&gt;</td><td><a name="zn1" id="zn1"></a>
+        
+          <p class="aml">Is the name of the first scalable vector register of a multi-vector sequence, encoded in the "Zn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zn2&gt;</td><td><a name="zn2" id="zn2"></a>
+        
+          <p class="aml">Is the name of the second scalable vector register of a multi-vector sequence, encoded in the "Zn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zdn&gt;</td><td><a name="zdn" id="zdn"></a>
+        
+          <p class="aml">Is the name of the first source and destination scalable vector register, encoded in the "Zdn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zm&gt;</td><td><a name="zm" id="zm"></a>
+        
+          <p class="aml">Is the name of the second source scalable vector register, encoded in the "Zm" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;imm&gt;</td><td><a name="imm" id="imm"></a>
+        
+          <p class="aml">Is the unsigned immediate operand, in the range 0 to 255, encoded in the "imm8h:imm8l" fields.</p>
+        
+      </td></tr></table></div><p class="syntax-notes"></p>
+    <div class="ps" psname="commonps"><a name="commonps" id="commonps"></a><h3 class="pseudocode">Operation</h3>
+      <p class="pseudocode">CheckSVEEnabled();
+integer elements = VL DIV esize;
+bits(VL) operand1 = Z[s1];
+bits(VL) operand2 = Z[s2];
+bits(VL) result;
+
+if position &gt;= elements then
+    position = 0;
+
+position = position &lt;&lt; 3;
+bits(VL*2) concat = operand2 : operand1;
+result = concat&lt;position+VL-1:position&gt;;
+
+Z[dst] = result;</p>
+    </div>
+  <h3>Operational information</h3><p class="aml">If PSTATE.DIT is 1:</p><ul><li>The execution time of this instruction is independent of:
+            <ul><li>The values of the data supplied in any of its registers.</li><li>The values of the NZCV flags.</li></ul></li><li>The response of this instruction to asynchronous exceptions does not vary based on:
+            <ul><li>The values of the data supplied in any of its registers.</li><li>The values of the NZCV flags.</li></ul></li></ul><hr /><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">
+      Internal version only: isa v31.05b, AdvSIMD v29.02, pseudocode v2019-12_rc3_1, sve v2019-12_rc3
+      ; Build timestamp: 2019-12-13T11:35
+    </p><p class="copyconf">
+      Copyright © 2010-2019 Arm Limited or its affiliates. All rights reserved.
+      This document is Non-Confidential.
+    </p></body></html>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><link rel="stylesheet" type="text/css" href="insn.css" /><meta name="generator" content="iform.xsl" /><title>CDOT (indexed)</title></head><body><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><hr /><h2 class="instruction-section">CDOT (indexed)</h2><p id="desc">Complex integer dot product (indexed).
+          <p></p><p>
+      <p class="aml">The complex integer dot product instructions delimit the source vectors into pairs of 8-bit or 16-bit signed integer complex numbers. Within each pair, the complex numbers in the first source vector are multiplied by the corresponding complex numbers in the second source vector and the resulting wide real or wide imaginary part of the product is accumulated into a 32-bit or 64-bit destination vector element which overlaps all four of the elements that comprise a pair of complex number values in the first source vector.</p>
+      <p class="aml">As a result each instruction implicitly deinterleaves the real and imaginary components of their complex number inputs, so that the destination vector accumulates 4×wide real sums or 4×wide imaginary sums.</p>
+      <p class="aml">The complex numbers in the second source vector are rotated by 0, 90, 180 or 270 degrees in the direction from the positive real axis towards the positive imaginary axis, when considered in polar representation, by performing the following transformations prior to the dot product operations:</p>
+      <p class="aml">* If the rotation is #0, the imaginary parts of the complex numbers in the second source vector are negated. The destination vector therefore accumulates the real parts of a complex dot product.</p>
+      <p class="aml">* If the rotation is #90, the real and imaginary parts of the complex numbers the second source vector are swapped. The destination vector therefore accumulates the imaginary parts of a complex dot product.</p>
+      <p class="aml">* If the rotation is #180, there is no transformation. The destination vector therefore accumulates the real parts of a complex conjugate dot product.</p>
+      <p class="aml">* If the rotation is #270, the real parts of the complex numbers in the second source vector are negated and then swapped with the imaginary parts. The destination vector therefore accumulates the imaginary parts of a complex conjugate dot product.</p>
+      <p class="aml"></p>
+      <p class="aml">The indexed form of these instructions select a single pair of complex numbers within each 128-bit segment of the second source vector as the multiplier for all pairs of complex numbers within the corresponding 128-bit segment of the first source vector. The complex number pairs within the second source vector are specified using an immediate index which selects the same complex number pair position within each 128-bit vector segment. The index range is from 0 to one less than the number of complex number pairs per 128-bit segment, encoded in 1 or 2 bits depending on the size of the complex number pair.</p>
+      <p class="aml">Each complex number is represented in a vector register as an even/odd pair of elements with the real part in the even-numbered element and the imaginary part in the odd-numbered element.</p>
+    </p></p>
+    <p class="desc">
+      It has encodings from 2 classes:
+      <a href="#cdot_z_zzzi_s">32-bit</a>
+       and 
+      <a href="#cdot_z_zzzi_d">64-bit</a>
+    </p>
+    <h3 class="classheading"><a name="cdot_z_zzzi_s" id="cdot_z_zzzi_s"></a>32-bit</h3><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="r">0</td><td class="lr">1</td><td class="lr">0</td><td class="lr">1</td><td colspan="2" class="lr">i2</td><td colspan="3" class="lr">Zm</td><td class="l">0</td><td>1</td><td>0</td><td class="r">0</td><td colspan="2" class="lr">rot</td><td colspan="5" class="lr">Zn</td><td colspan="5" class="lr">Zda</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">32-bit</h4><p class="asm-code"><a name="cdot_z_zzzi_s" id="cdot_z_zzzi_s"></a>CDOT    <a href="#zda" title="Third source and destination scalable vector register (field &quot;Zda&quot;)">&lt;Zda&gt;</a>.S, <a href="#zn" title="First source scalable vector register (field &quot;Zn&quot;)">&lt;Zn&gt;</a>.B, <a href="#zm_1" title="Second source scalable vector register Z0-Z7 (field &quot;Zm&quot;)">&lt;Zm&gt;</a>.B[<a href="#imm_1" title="Immediate index of a quadtuplet of four 8-bit elements within each 128-bit vector segment [0-3] (field &quot;i2&quot;)">&lt;imm&gt;</a>], <a href="#const" title="Const specifier (field &quot;rot&quot;) [#0,#90,#180,#270]">&lt;const&gt;</a></p></div><p class="pseudocode">if !HaveSVE2() then UNDEFINED;
+integer esize = 32;
+integer index = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(i2);
+integer n = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zn);
+integer m = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zm);
+integer da = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zda);
+integer sel_a = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(rot&lt;0&gt;);
+integer sel_b = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(NOT(rot&lt;0&gt;));
+boolean sub_i = (rot&lt;0&gt; == rot&lt;1&gt;);</p>
+    <h3 class="classheading"><a name="cdot_z_zzzi_d" id="cdot_z_zzzi_d"></a>64-bit</h3><div class="regdiagram-32"><table class="regdiagram"><thead><tr><td>31</td><td>30</td><td>29</td><td>28</td><td>27</td><td>26</td><td>25</td><td>24</td><td>23</td><td>22</td><td>21</td><td>20</td><td>19</td><td>18</td><td>17</td><td>16</td><td>15</td><td>14</td><td>13</td><td>12</td><td>11</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td><td>0</td></tr></thead><tbody><tr class="firstrow"><td class="l">0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td class="r">0</td><td class="lr">1</td><td class="lr">1</td><td class="lr">1</td><td class="lr">i1</td><td colspan="4" class="lr">Zm</td><td class="l">0</td><td>1</td><td>0</td><td class="r">0</td><td colspan="2" class="lr">rot</td><td colspan="5" class="lr">Zn</td><td colspan="5" class="lr">Zda</td></tr></tbody></table></div><div class="encoding"><h4 class="encoding">64-bit</h4><p class="asm-code"><a name="cdot_z_zzzi_d" id="cdot_z_zzzi_d"></a>CDOT    <a href="#zda" title="Third source and destination scalable vector register (field &quot;Zda&quot;)">&lt;Zda&gt;</a>.D, <a href="#zn" title="First source scalable vector register (field &quot;Zn&quot;)">&lt;Zn&gt;</a>.H, <a href="#zm" title="Second source scalable vector register Z0-Z15 (field &quot;Zm&quot;)">&lt;Zm&gt;</a>.H[<a href="#imm" title="Immediate index of a quadtuplet of four 16-bit elements within each 128-bit vector segment [0-1] (field &quot;i1&quot;)">&lt;imm&gt;</a>], <a href="#const" title="Const specifier (field &quot;rot&quot;) [#0,#90,#180,#270]">&lt;const&gt;</a></p></div><p class="pseudocode">if !HaveSVE2() then UNDEFINED;
+integer esize = 64;
+integer index = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(i1);
+integer n = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zn);
+integer m = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zm);
+integer da = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(Zda);
+integer sel_a = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(rot&lt;0&gt;);
+integer sel_b = <a href="shared_pseudocode.html#impl-shared.UInt.1" title="function: integer UInt(bits(N) x)">UInt</a>(NOT(rot&lt;0&gt;));
+boolean sub_i = (rot&lt;0&gt; == rot&lt;1&gt;);</p>
+  <p class="encoding-notes"></p><h3 class="explanations">Assembler Symbols</h3><div class="explanations"><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zda&gt;</td><td><a name="zda" id="zda"></a>
+        
+          <p class="aml">Is the name of the third source and destination scalable vector register, encoded in the "Zda" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zn&gt;</td><td><a name="zn" id="zn"></a>
+        
+          <p class="aml">Is the name of the first source scalable vector register, encoded in the "Zn" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;Zm&gt;</td><td><a name="zm_1" id="zm_1"></a>
+        
+          
+        
+        
+          <p class="aml">For the 32-bit variant: is the name of the second source scalable vector register Z0-Z7, encoded in the "Zm" field.</p>
+        
+      </td></tr><tr><td></td><td><a name="zm" id="zm"></a>
+        
+          
+        
+        
+          <p class="aml">For the 64-bit variant: is the name of the second source scalable vector register Z0-Z15, encoded in the "Zm" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;imm&gt;</td><td><a name="imm_1" id="imm_1"></a>
+        
+          
+        
+        
+          <p class="aml">For the 32-bit variant: is the immediate index of a quadtuplet of four 8-bit elements within each 128-bit vector segment, in the range 0 to 3, encoded in the "i2" field.</p>
+        
+      </td></tr><tr><td></td><td><a name="imm" id="imm"></a>
+        
+          
+        
+        
+          <p class="aml">For the 64-bit variant: is the immediate index of a quadtuplet of four 16-bit elements within each 128-bit vector segment, in the range 0 to 1, encoded in the "i1" field.</p>
+        
+      </td></tr></table><table><col class="asyn-l" /><col class="asyn-r" /><tr><td>&lt;const&gt;</td><td><a name="const" id="const"></a>
+        Is the const specifier, 
+    encoded in 
+    <q>rot</q>:
+      
+        <table class="valuetable">
+          
+            <thead>
+              <tr>
+                <th class="bitfield">rot</th>
+                <th class="symbol">&lt;const&gt;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="bitfield">00</td>
+                <td class="symbol">#0</td>
+              </tr>
+              <tr>
+                <td class="bitfield">01</td>
+                <td class="symbol">#90</td>
+              </tr>
+              <tr>
+                <td class="bitfield">10</td>
+                <td class="symbol">#180</td>
+              </tr>
+              <tr>
+                <td class="bitfield">11</td>
+                <td class="symbol">#270</td>
+              </tr>
+            </tbody>
+          
+        </table>
+      </td></tr></table></div><p class="syntax-notes"></p>
+    <div class="ps" psname="commonps"><a name="commonps" id="commonps"></a><h3 class="pseudocode">Operation</h3>
+      <p class="pseudocode">CheckSVEEnabled();
+integer elements = VL DIV esize;
+integer eltspersegment = 128 DIV esize;
+bits(VL) operand1 = Z[n];
+bits(VL) operand2 = Z[m];
+bits(VL) operand3 = Z[da];
+bits(VL) result;
+
+for e = 0 to elements-1
+    integer segmentbase = e - e MOD eltspersegment;
+    integer s = segmentbase + index;
+    bits(esize) res = <a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand3, e, esize];
+    for i = 0 to 1
+        integer elt1_r = <a href="shared_pseudocode.html#impl-shared.SInt.1" title="function: integer SInt(bits(N) x)">SInt</a>(<a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand1, 4 * e + 2 * i + 0, esize DIV 4]);
+        integer elt1_i = <a href="shared_pseudocode.html#impl-shared.SInt.1" title="function: integer SInt(bits(N) x)">SInt</a>(<a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand1, 4 * e + 2 * i + 1, esize DIV 4]);
+        integer elt2_a = <a href="shared_pseudocode.html#impl-shared.SInt.1" title="function: integer SInt(bits(N) x)">SInt</a>(<a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand2, 4 * s + 2 * i + sel_a, esize DIV 4]);
+        integer elt2_b = <a href="shared_pseudocode.html#impl-shared.SInt.1" title="function: integer SInt(bits(N) x)">SInt</a>(<a href="shared_pseudocode.html#impl-shared.Elem.read.3" title="accessor: bits(size) Elem[bits(N) vector, integer e, integer size]">Elem</a>[operand2, 4 * s + 2 * i + sel_b, esize DIV 4]);
+        if sub_i then
+            res = res + (elt1_r * elt2_a) - (elt1_i * elt2_b);
+        else
+            res = res + (elt1_r * elt2_a) + (elt1_i * elt2_b);
+    <a href="shared_pseudocode.html#impl-shared.Elem.write.3" title="accessor: Elem[bits(N) &amp;vector, integer e, integer size] = bits(size) value">Elem</a>[result, e, esize] = res;
+
+Z[da] = result;</p>
+    </div>
+  <h3>Operational information</h3><p class="aml">
+          This instruction might be immediately preceded in program order by a <span class="asm-code">MOVPRFX</span> instruction. The <span class="asm-code">MOVPRFX</span> instruction must conform to all of the following requirements, otherwise the behavior of the <span class="asm-code">MOVPRFX</span> and this instruction is <span class="arm-defined-word">unpredictable</span>:
+        </p><ul><li>The <span class="asm-code">MOVPRFX</span> instruction must be unpredicated.</li><li>The <span class="asm-code">MOVPRFX</span> instruction must specify the same destination register as this instruction.</li><li>The destination register must not refer to architectural register state referenced by any other source operand register of this instruction.</li></ul><hr /><table align="center"><tr><td><div class="topbar"><a href="index.html">Base Instructions</a></div></td><td><div class="topbar"><a href="fpsimdindex.html">SIMD&amp;FP Instructions</a></div></td><td><div class="topbar"><a href="sveindex.html">SVE Instructions</a></div></td><td><div class="topbar"><a href="encodingindex.html">Index by Encoding</a></div></td><td><div class="topbar"><a href="shared_pseudocode.html">Shared Pseudocode</a></div></td><td><div class="topbar"><a href="notice.html">Proprietary Notice</a></div></td></tr></table><p class="versions">
+      Internal version only: isa v31.05b, AdvSIMD v29.02, pseudocode v2019-12_rc3_1, sve v2019-12_rc3
+      ; Build timestamp: 2019-12-13T11:35
+    </p><p class="copyconf">
+      Copyright © 2010-2019 Arm Limited or its affiliates. All rights reserved.
+      This document is Non-Confidential.
+    </p></body></html>

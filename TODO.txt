@@ -1,0 +1,83 @@
+
+=============================TODO/KNOWING_ISSUE=============================
+
+
+DATABASE(opcodeDB):
+- database has become more complex : we really need a specific file-format. 
+- there is no table for standard shifter for aarch32.
+- there is no table for x86 registers.
+
+
+GENERATOR:
+- for god sake, work on refactoring !!!!
+ 
+
+EXAMPLES:
+- add some examples.
+
+
+CORE:
+- many functions are not implemented as target-independent: amed_x86_page_to_string, amed_aarch32_page_to_string, amed_aarch64_page_to_string, ...
+  there should be a common function called  amed_page_to_string!!!
+
+- add support for dynamic library.
+
+- broadcasting field should be moved from memory node to argument node.
+  in that way we can let other operands(rather than memory) use broadcasting.
+  e.g: instruction that broadcasts immediate: DUP <Zd>.<T>, #<imm>{, <shift>}
+
+- for all architectures, make a common exceptions class:
+  e.g: instead of EXCEPTION={AVX512_E2}, transform it to something like this:
+  EXCEPTION={DEVICE_NOT_AVAILABLE,GENERAL_PROTECTION,PAGE_FAULT,FP}
+  
+- should we add a common syntax for all architectures ??????????
+  e.g: 
+		x86    : vaddps   xmm1, xmm2, xmm3
+		aarch32: vadd.f32 d1,   d2,   d3
+		aarch64: fadd.4s  v1,   v2,   v3
+		-------------------------------------
+		amed   : add     v1.f32, v2.f32, v2.f32 
+		       | add.f32 v1, v2, v2 
+	
+- add tests.
+
+ 
+AARCH32:
+- some instructions use a register as a memory base. we should convert that to a full memory.
+  e.g: ldm R0!, { r1, r2 } : LDM   WREG={REG=$Rnupc WBACK:OPT=$wback} GLIST=$registers
+					      => LDM   BM={BASE=$Rnupc  WBACK:OPT=$wback OFFSET=?? } GLIST=$registers.
+						  decoder decodes BM and printer print it as a register with writeback.
+
+- because of the first issue, not all instructions are marked with may_load/may_store.
+- some instructions use LM node and they are decoded as memory. but they should be printed as literal instead of memory. 
+- possibly add support for ARMv7 instructions(ldc2) ??
+
+
+AARCH64:
+- few of sve-instructions use broadcasting => add broadcasting info.
+
+- system-alias instructions are decoded twice ! with sysop && with thier tables: 
+  this has a little impact on the performance. if possible decode 'em only once.
+
+- ARM marks some system alias instruction as a non alias. 
+  as a result there is a conflict that is resolved by taking the longest matched pattern.
+  if we mark 'em as aliases, we may sinifically improve the performance.
+
+ 
+X86:
+- xeon instructions that use down/up conversion are printed using amed_datatype: U16, F32, ...
+  should we print it as intel( UINT16, FLOAT32, ... )???
+
+
+AARCH32/AARCH64:
+- some arguments are optional. printer should not print 'em.
+- add support for named system-register.
+
+
+PRINTER:
+- printer should ignore xzr register.
+- printer should not print defaut shifter.
+- printer is very basic in its functionality ... add more options: 
+  printing suppressed arguments.
+  printing datatype next mnemonic or register
+  ...

@@ -1,0 +1,158 @@
+%token LTLT GTGT ANDAND OROR GE LE EQEQ NOTEQ 
+%token LPAREN RPAREN LBRACE RBRACE EQ PLUS MINUS STAR SLASH MOD AND OR NOT GT LT TIL CARET COMMA COLON
+%token BIN HEX FLOAT DEC  
+%token ID LT2 GT2 IN
+%token SQSTR
+%start start
+%strict
+%%
+
+start
+  :		expression
+  ;
+
+expression
+    :	logicalOrExpression
+    ;
+	
+logicalOrExpression
+    :	logicalOrExpression OROR logicalAndExpression	{ { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   logicalAndExpression
+    ;
+    
+logicalAndExpression
+    :   logicalAndExpression ANDAND orExpression 		{ { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   orExpression
+    ;
+
+orExpression
+    :   orExpression OR xorExpression 		{ { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   xorExpression
+    ;
+
+xorExpression
+    :   xorExpression CARET andExpression  	{ { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   andExpression
+    ;
+
+andExpression
+    :   andExpression AND equalityExpression 			{ { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   equalityExpression
+    ;
+
+equalityExpression
+    :   equalityExpression EQEQ  relationalExpression 	{ { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   equalityExpression NOTEQ relationalExpression 	{ { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   relationalExpression
+    ;
+
+relationalExpression
+    :   relationalExpression LT shiftExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   relationalExpression GT shiftExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   relationalExpression LE shiftExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   relationalExpression GE shiftExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   shiftExpression
+    ;
+
+shiftExpression
+    :   shiftExpression LTLT addExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   shiftExpression GTGT addExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |   addExpression
+    ;
+    
+addExpression
+    :	addExpression PLUS  mulExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |	addExpression MINUS mulExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |	mulExpression
+    ;
+    
+mulExpression
+    :	mulExpression STAR  unaryExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |	mulExpression SLASH unaryExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    | 	mulExpression MOD   unaryExpression { { type => 'expression', left => $_[1], op => $_[2], right => $_[3]  } }
+    |	unaryExpression
+    ;
+    
+unaryExpression
+    :	unaryOperator postfixExpression  { { type => 'unary', op => $_[1], expression => $_[2] } }
+    | 	postfixExpression
+    ;
+
+unaryOperator
+    :	PLUS 
+    | 	MINUS 
+    | 	NOT
+    ;
+
+postfixExpression
+    :	inExpression
+    ;    
+
+inExpression
+    :	sliceExpression IN array     { { type => 'inexpression', left => $_[1], items => $_[3] } }
+    |	sliceExpression
+    ;
+    
+array
+    :	LBRACE items? RBRACE { $_[2][0] // [] }
+    ;
+
+items
+	:	items COMMA item  { push @{$_[1]}, $_[3]; $_[1] }
+	|	item              { [ $_[1] ] }
+	;
+
+item
+	: expression
+	;
+
+sliceExpression
+	:	sliceExpressionList  { my $tmp = scalar @{$_[1]} == 1 ? $_[1]->[0] : { type => 'slice', arguments => $_[1] // [] }; $tmp }
+	;
+	
+sliceExpressionList
+	: 	sliceExpressionList COLON partExpression  { push @{$_[1]}, $_[3]; $_[1] }
+	|	partExpression { [$_[1]] }
+	;
+    
+partExpression
+	:	primaryExpression LT2 part GT2            { { type => 'part', expression => $_[1], from => $_[3], to => $_[3]  } }  
+	|	primaryExpression LT2 part COLON part GT2 { { type => 'part', expression => $_[1], from => $_[3], to => $_[5]  } }  
+	|	primaryExpression
+	;
+
+part
+	:	id
+	|	dec
+	|	call
+    ;
+    
+primaryExpression
+    :	LPAREN expression RPAREN { $_[2] }
+    | 	BIN   	{ { type => 'bin',		value => $_[1] } }
+    | 	HEX   	{ { type => 'hex',		value => $_[1] } }
+    | 	FLOAT 	{ { type => 'float', 	value => $_[1] } }
+	|	SQSTR   { { type => 'sqstr',	value => $_[1] } }	 
+	|	id
+	|	dec
+    |	call
+    ;
+
+call
+	:	ID LPAREN argumentExpressionList? RPAREN { { type => 'call', name => $_[1], arguments => $_[3][0] // [] } }
+	;
+
+id  :	ID    	{ { type => 'id',		value => $_[1] } }
+    ;	
+
+dec :	DEC   	{ { type => 'dec',		value => $_[1] } }
+    ;
+
+argumentExpressionList
+	:	argumentExpressionList COMMA expression { push @{$_[1]}, $_[3]; $_[1] }
+	|	expression    { [ $_[1] ] }
+	;
+	  
+%%
+require 'Lexer.pl';
+__PACKAGE__->lexer(\&EXPRESSION_LEXER);
