@@ -1,2 +1,5 @@
 html/* linguist-documentation
-
+html/target/* linguist-documentation
+html/target/x86/* linguist-documentation
+html/target/aarch32/* linguist-documentation
+html/target/aarch64/* linguist-documentation
